@@ -1,0 +1,17 @@
+Source: importer
+Section: python
+Priority: optional
+Maintainer: Thomas Meson <thomas.meson@smartjog.com>
+Build-Depends: debhelper (>= 5.0.38), cdbs, python-central (>= 0.5.6)
+XS-Python-Version: current
+Standards-Version: 3.8.0
+
+Package: importer
+Architecture: all
+Section: python
+Depends: ${python:Depends}
+XB-Python-Version: ${python:Versions}
+Description: Perform remote call through a distant webengine
+ Importer allow to transparently perform local or distant calls to
+ Python module. It can also store object instance remotely and perform
+ call/get/set on this instance.
