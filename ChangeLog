@@ -3,3 +3,4 @@ Version 0.1.0~dev
 	* Initial release
 	* Added more exceptions class
 	* Better error handling for UnpicklingError
+	* Moved exceptions to their own python file

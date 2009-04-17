@@ -1,28 +1,11 @@
 """ Importer """
 
 import traceback, os, cookielib, urllib2
+from exc import *
+
+__all__ = ['ImporterError', 'ImporterDeserializeError', 'ImporterSerializeError', 'ImporterConnectError', 'Importer']
 
 COOKIE_FILE = 'cookies.lwp'
-
-class ImporterError(Exception):
-    """ Raised when something happen in Importer."""
-    def __init__(self, msg, local=True, traceback=''):
-        self.msg = msg.strip()
-        self.local = local
-        self.traceback = traceback.strip()
-
-    def __repr__(self):
-        return self.traceback or self.msg or 'Importer failed'
-    __str__ = __repr__
-
-class ImporterDeserializeError(ImporterError):
-    pass
-
-class ImporterSerializeError(ImporterError):
-    pass
-
-class ImporterConnectError(ImporterError):
-    pass
 
 class ImporterBase(object):
     """
