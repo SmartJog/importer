@@ -15,6 +15,15 @@ class ImporterError(Exception):
         return self.traceback or self.msg or 'Importer failed'
     __str__ = __repr__
 
+class ImporterDeserializeError(ImporterError):
+    pass
+
+class ImporterSerializeError(ImporterError):
+    pass
+
+class ImporterConnectError(ImporterError):
+    pass
+
 class ImporterBase(object):
     """
         Base class for both ImporterModule and ImporterVariable.
@@ -186,7 +195,7 @@ class Importer(ImporterBase):
             data_decoded = cPickle.loads(e.read()) # Read exception
             raise ImporterError(data_decoded['msg'], local=False, traceback=data_decoded['traceback'])
         except urllib2.URLError, e:
-            raise ImporterError(str(e), traceback=traceback.format_exc())
+            raise ImporterConnectError(str(e), traceback=traceback.format_exc())
         except cPickle.PickleError, e:
-            raise ImporterError(str(e), traceback=traceback.format_exc())
+            raise ImporterSerializeError(str(e), traceback=traceback.format_exc())
 
