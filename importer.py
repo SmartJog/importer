@@ -11,8 +11,8 @@ class ImporterBase(object):
         Provide call/get/set methods, relying on proper self.__objinst__ object.
         ImporterModule and ImporterVariable are in charge of creating the appropriate object.
     """
-    def __init__(self, conf={}):
-        self.__conf__ = conf
+    def __init__(self):
+        self.__conf__ = {}
         self.__objinst__ = None
 
     def __getitem__(self, key):
@@ -84,11 +84,7 @@ class ImporterVariable(ImporterBase):
         self.__mod__ = module
         self.__klass__ = klass
         try:
-            #Instantiate the object
-            if isinstance(self.__mod__, ImporterBase):
-                self.__objinst__ = getattr(self.__mod__.__objinst__, klass)(*args, **kw)
-            else:
-                self.__objinst__ = getattr(__import__(self.__mod__, {}, {}, ['']), klass)(*args, **kw)
+            self.__objinst__ = self.__mod__.get(self.__klass__)(*args, **kw)
         except Exception, e:
             raise ImporterError(str(e), traceback=traceback.format_exc())
 
@@ -133,8 +129,7 @@ class Importer(ImporterBase):
             mod = '.'.join((module, klass))
             return self.__perform_distant__(mod, 'instantiate', variable=variable, *args, **kw)
         if variable in self.__scope__.keys(): return
-        if module in self.__scope__.keys():
-            module = self.__scope__[module]
+        module = self.__load_module__(module)
         self.__scope__[variable] = ImporterVariable(self.__conf__, module, klass, *args, **kw)
 
     def bound(self, bound):

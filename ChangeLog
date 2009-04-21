@@ -4,3 +4,5 @@ Version 0.1.0~dev
 	* Added more exceptions class
 	* Better error handling for UnpicklingError
 	* Moved exceptions to their own python file
+	* Fix bug: Different instances of Importer was sharing the same "conf"
+	dictionary (due to the way python handle default arg for parameters)
