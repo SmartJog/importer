@@ -174,7 +174,11 @@ class Importer(ImporterBase):
             except cPickle.UnpicklingError:
                 raise ImporterDeserializeError(data_read, traceback=traceback.format_exc())
         except urllib2.HTTPError, e:
-            data_decoded = cPickle.loads(e.read()) # Read exception
+            error = e.read()
+            try:
+                data_decoded = cPickle.loads(error) # Read exception
+            except cPickle.UnpicklingError, e:
+                raise ImporterDeserializeError(error, traceback=traceback.format_exc())
             raise ImporterError(data_decoded['msg'], local=False, traceback=data_decoded['traceback'])
         except urllib2.URLError, e:
             raise ImporterConnectError(str(e), traceback=traceback.format_exc())
