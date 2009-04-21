@@ -145,7 +145,7 @@ class Importer(ImporterBase):
         """ Lookup for 'module' in scope, and if not present, create a ImporterModule object, and return it """
         # Module already in scope?
         if module not in self.__scope__.keys():
-            first = module.split('/')[0]
+            first = module.split('.')[0]
             # Module out of bounds?
             if self.__bound__ and first not in self.__bound__:
                 raise ImporterError('Module %s out of bounds' % first)
