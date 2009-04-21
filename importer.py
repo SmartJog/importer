@@ -5,8 +5,6 @@ from exc import *
 
 __all__ = ['ImporterError', 'ImporterDeserializeError', 'ImporterSerializeError', 'ImporterConnectError', 'Importer']
 
-COOKIE_FILE = 'cookies.lwp'
-
 class ImporterBase(object):
     """
         Base class for both ImporterModule and ImporterVariable.
@@ -99,11 +97,11 @@ class Importer(ImporterBase):
         Main class. Contains all modules.
         Call/get/set/instantiate always check if execution must be done remotely.
     """
-    def __init__(self, file=COOKIE_FILE):
+    def __init__(self):
         super(Importer, self).__init__()
         self.__scope__ = {}
         self.__bound__ = None
-        self.__file__ = file
+        self.__cj__ = None
 
     def call(self, module, method, *args, **kw):
         """
@@ -159,21 +157,19 @@ class Importer(ImporterBase):
         """ Perform the distant call. """
         import cPickle
         try:
-            cj = cookielib.LWPCookieJar(self.__file__)
-            if os.path.isfile(self.__file__):
-                cj.load(self.__file__)
-            opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+            if not self.__cj__:
+                self.__cj__ = cookielib.CookieJar()
+                self.__opener__ = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.__cj__))
             path = module.replace('.', '/') + '/' #Force trailing slash
             # Should be able to select encoder
             # TODO: Create a wrapper for cPickle, pickle in fallback
             data = cPickle.dumps({'type': type, 'args': args, 'kw': kw}, cPickle.HIGHEST_PROTOCOL)
             req = urllib2.Request(url=self.__conf__['distant_url'] + path, data=data)
-            f = opener.open(req)
+            f = self.__opener__.open(req)
             data_read = f.read()
             if data_read == '': return None
             try:
                 data_decoded = cPickle.loads(data_read)
-                cj.save()
                 return data_decoded
             except cPickle.UnpicklingError:
                 raise ImporterDeserializeError(data_read, traceback=traceback.format_exc())
