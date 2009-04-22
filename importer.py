@@ -32,28 +32,19 @@ class ImporterBase(object):
 
     def call(self, method, *args, **kw):
         """ Getattr self.__objinst__ which will be a module instance or a variable instance. """
-        try:
-            return getattr(self.__objinst__, method)(*args, **kw)
-        except Exception, e:
-            raise ImporterError(str(e), traceback=traceback.format_exc())
+        return getattr(self.__objinst__, method)(*args, **kw)
 
     def get(self, attr):
         """ Getattr self.__objinst__ and returns. """
-        try:
-            return getattr(self.__objinst__, attr)
-        except AttributeError, e:
-            raise ImporterError(str(e), traceback=traceback.format_exc())
+        return getattr(self.__objinst__, attr)
 
 class ImporterModule(ImporterBase):
     def __init__(self, conf, module):
         """ Takes configuration from Importer() instance. """
-        super(ImporterBase, self).__init__(conf)
+        ImporterBase.__init__()
         self.__mod__ = module
-        try:
-            # Just try to import it
-            __import__(self.__mod__, {}, {}, [''])
-        except ImportError, e:
-            raise ImporterError(str(e), traceback=traceback.format_exc())
+        # Just try to import it
+        __import__(self.__mod__, {}, {}, [''])
 
     def call(self, method, *args, **kw):
         """
@@ -61,10 +52,7 @@ class ImporterModule(ImporterBase):
             We need to do this, because if we store the module instance in __objinst__,
             when saving the session, module is tried to be pickled, and it fails.
         """
-        try:
-            self.__objinst__ = __import__(self.__mod__, {}, {}, [''])
-        except ImportError, e:
-            raise ImporterError(str(e), traceback=traceback.format_exc())
+        self.__objinst__ = __import__(self.__mod__, {}, {}, [''])
         ret = ImporterBase.call(self, method, *args, **kw)
         # We need to remove from the object, cause a lot of module are not "pickable"
         self.__objinst__ = None
@@ -73,20 +61,14 @@ class ImporterModule(ImporterBase):
     def get(self, attr):
         """
         """
-        try:
-            return getattr(__import__(self.__mod__, {}, {}, ['']), attr)
-        except ImportError, e:
-            raise ImporterError(str(e), traceback=traceback.format_exc())
+        return getattr(__import__(self.__mod__, {}, {}, ['']), attr)
 
 class ImporterVariable(ImporterBase):
     def __init__(self, conf, module, klass, *args, **kw):
-        super(ImporterBase, self).__init__(conf)
+        ImporterBase.__init__()
         self.__mod__ = module
         self.__klass__ = klass
-        try:
-            self.__objinst__ = self.__mod__.get(self.__klass__)(*args, **kw)
-        except Exception, e:
-            raise ImporterError(str(e), traceback=traceback.format_exc())
+        self.__objinst__ = self.__mod__.get(self.__klass__)(*args, **kw)
 
 class Importer(ImporterBase):
     """
@@ -94,7 +76,7 @@ class Importer(ImporterBase):
         Call/get/set/instantiate always check if execution must be done remotely.
     """
     def __init__(self):
-        super(Importer, self).__init__()
+        ImporterBase.__init__()
         self.__scope__ = {}
         self.__bound__ = None
         self.__cj__ = None
@@ -108,16 +90,22 @@ class Importer(ImporterBase):
         if 'distant_url' in self.__conf__.keys():
             mod = '.'.join((module, method))
             return self.__perform_distant__(mod, 'call', *args, **kw)
-        self.__load_module__(module)
-        return self.__scope__[module].call(method, *args, **kw)
+        try:
+            self.__load_module__(module)
+            return self.__scope__[module].call(method, *args, **kw)
+        except Exception, e:
+            raise ImporterError(str(e), traceback=traceback.format_exc())
 
     def get(self, module, attr):
         """ Retrieve an attr from the given module. """
         if 'distant_url' in self.__conf__.keys():
             mod = '.'.join((module, attr))
             return self.__perform_distant__(mod, 'get')
-        self.__load_module__(module)
-        return self.__scope__[module].get(attr)
+        try:
+            self.__load_module__(module)
+            return self.__scope__[module].get(attr)
+        except Exception, e:
+            raise ImporterError(str(e), traceback=traceback.format_exc())
 
     def instantiate(self, variable, module, klass, *args, **kw):
         """
@@ -128,9 +116,12 @@ class Importer(ImporterBase):
         if 'distant_url' in self.__conf__.keys():
             mod = '.'.join((module, klass))
             return self.__perform_distant__(mod, 'instantiate', variable=variable, *args, **kw)
-        if variable in self.__scope__.keys(): return
-        module = self.__load_module__(module)
-        self.__scope__[variable] = ImporterVariable(self.__conf__, module, klass, *args, **kw)
+        try:
+            if variable in self.__scope__.keys(): return
+            module = self.__load_module__(module)
+            self.__scope__[variable] = ImporterVariable(self.__conf__, module, klass, *args, **kw)
+        except Exception, e:
+            raise ImporterError(str(e), traceback=traceback.format_exc())
 
     def bound(self, bound):
         """ Bound Importer scope to "bound" list. """
