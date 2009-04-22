@@ -41,7 +41,7 @@ class ImporterBase(object):
 class ImporterModule(ImporterBase):
     def __init__(self, conf, module):
         """ Takes configuration from Importer() instance. """
-        ImporterBase.__init__()
+        ImporterBase.__init__(self)
         self.__mod__ = module
         # Just try to import it
         __import__(self.__mod__, {}, {}, [''])
@@ -65,7 +65,7 @@ class ImporterModule(ImporterBase):
 
 class ImporterVariable(ImporterBase):
     def __init__(self, conf, module, klass, *args, **kw):
-        ImporterBase.__init__()
+        ImporterBase.__init__(self)
         self.__mod__ = module
         self.__klass__ = klass
         self.__objinst__ = self.__mod__.get(self.__klass__)(*args, **kw)
@@ -76,7 +76,7 @@ class Importer(ImporterBase):
         Call/get/set/instantiate always check if execution must be done remotely.
     """
     def __init__(self):
-        ImporterBase.__init__()
+        ImporterBase.__init__(self)
         self.__scope__ = {}
         self.__bound__ = None
         self.__cj__ = None
