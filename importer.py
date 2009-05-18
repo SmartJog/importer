@@ -1,9 +1,22 @@
 """ Importer """
 
-import traceback, os, cookielib, urllib2
+import traceback, os, cookielib, urllib2, httplib
 from exc import *
 
 __all__ = ['ImporterError', 'ImporterDeserializeError', 'ImporterSerializeError', 'ImporterConnectError', 'Importer']
+
+class ImporterHTTPSHandler(urllib2.HTTPSHandler):
+    """ To be used by urllib2, wrap calls to httplib. """
+    def __init__(self, key, cert):
+        urllib2.HTTPSHandler.__init__(self)
+        self.key = key
+        self.cert = cert
+
+    def https_open(self, req):
+        return self.do_open(self.create_conn, req)
+
+    def create_conn(self, host, timeout = 300):
+        return httplib.HTTPSConnection(host, key_file = self.key, cert_file = self.cert)
 
 class ImporterBase(object):
     """
@@ -38,31 +51,6 @@ class ImporterBase(object):
         """ Getattr self.__objinst__ and returns. """
         return getattr(self.__objinst__, attr)
 
-class ImporterModule(ImporterBase):
-    def __init__(self, conf, module):
-        """ Takes configuration from Importer() instance. """
-        ImporterBase.__init__(self)
-        self.__mod__ = module
-        # Just try to import it
-        __import__(self.__mod__, {}, {}, [''])
-
-    def call(self, method, *args, **kw):
-        """
-            Override ImporterBase.call, but call it after.
-            We need to do this, because if we store the module instance in __objinst__,
-            when saving the session, module is tried to be pickled, and it fails.
-        """
-        self.__objinst__ = __import__(self.__mod__, {}, {}, [''])
-        ret = ImporterBase.call(self, method, *args, **kw)
-        # We need to remove from the object, cause a lot of module are not "pickable"
-        self.__objinst__ = None
-        return ret
-
-    def get(self, attr):
-        """
-        """
-        return getattr(__import__(self.__mod__, {}, {}, ['']), attr)
-
 class ImporterVariable(ImporterBase):
     def __init__(self, conf, module, klass, *args, **kw):
         ImporterBase.__init__(self)
@@ -91,8 +79,10 @@ class Importer(ImporterBase):
             mod = '.'.join((module, method))
             return self.__perform_distant__(mod, 'call', *args, **kw)
         try:
-            self.__load_module__(module)
-            return self.__scope__[module].call(method, *args, **kw)
+            if module in self.__scope__.keys(): # Class instance
+                return self.__scope__[module].call(method, *args, **kw)
+            mod = __import__(module, {}, {}, [''])
+            return getattr(mod, method)(*args, **kw)
         except Exception, e:
             raise ImporterError(str(e), traceback=traceback.format_exc())
 
@@ -102,8 +92,10 @@ class Importer(ImporterBase):
             mod = '.'.join((module, attr))
             return self.__perform_distant__(mod, 'get')
         try:
-            self.__load_module__(module)
-            return self.__scope__[module].get(attr)
+            if module in self.__scope__.keys(): # Class instance
+                return self.__scope__[module].get(attr)
+            mod = __import__(module, {}, {}, [''])
+            return getattr(mod, attr)
         except Exception, e:
             raise ImporterError(str(e), traceback=traceback.format_exc())
 
@@ -123,21 +115,13 @@ class Importer(ImporterBase):
         except Exception, e:
             raise ImporterError(str(e), traceback=traceback.format_exc())
 
-    def bound(self, bound):
+    def _set_bound(self, bound):
         """ Bound Importer scope to "bound" list. """
         self.__bound__ = bound
-
-    def __load_module__(self, module):
-        """ Lookup for 'module' in scope, and if not present, create a ImporterModule object, and return it """
-        # Module already in scope?
-        if module not in self.__scope__.keys():
-            first = module.split('.')[0]
-            # Module out of bounds?
-            if self.__bound__ and first not in self.__bound__:
-                raise ImporterError('Module %s out of bounds' % first)
-            # Add module to scope and import
-            self.__scope__[module] = ImporterModule(self.__conf__, module)
-        return self.__scope__[module]
+    def _get_bound(self):
+        """ Returns bound list. """
+        return self.__bound__
+    bound = property(_get_bound, _set_bound)
 
     def __perform_distant__(self, module, type, *args, **kw):
         """ Perform the distant call. """
@@ -145,13 +129,16 @@ class Importer(ImporterBase):
         try:
             if not self.__cj__:
                 self.__cj__ = cookielib.CookieJar()
-                self.__opener__ = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.__cj__))
+                opener_cj = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.__cj__))
+                opener_ssl = urllib2.build_opener(ImporterHTTPSHandler(key = self.__conf__.get('ssl_key'), cert = self.__conf__.get('ssl_cert')))
+                urllib2.install_opener(opener_cj)
+                urllib2.install_opener(opener_ssl)
             path = module.replace('.', '/') + '/' #Force trailing slash
             # Should be able to select encoder
             # TODO: Create a wrapper for cPickle, pickle in fallback
             data = cPickle.dumps({'type': type, 'args': args, 'kw': kw}, cPickle.HIGHEST_PROTOCOL)
             req = urllib2.Request(url=self.__conf__['distant_url'] + path, data=data)
-            f = self.__opener__.open(req)
+            f = urllib2.urlopen(req)
             data_read = f.read()
             if data_read == '': return None
             try:
