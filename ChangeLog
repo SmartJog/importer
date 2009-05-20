@@ -2,6 +2,7 @@ Version 0.2.0~dev
 
 	* Handle SSL certificates. Closes: #1912.
 	* Fix: Display read message instead of UnpicklingError.
+	* Allow calls to webengine methods.
 
 Version 0.1.0 Released on 2009/05/12
 

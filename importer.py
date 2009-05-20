@@ -82,7 +82,10 @@ class Importer(ImporterBase):
             if module in self.__scope__.keys(): # Class instance
                 return self.__scope__[module].call(method, *args, **kw)
             mod = __import__(module, {}, {}, [''])
-            return getattr(mod, method)(*args, **kw)
+            callee = getattr(mod, method)
+            request = kw.pop('__request__', None)
+            if hasattr(callee, '__exportable__'): return callee(request, *args, **kw)
+            else: return getattr(mod, method)(*args, **kw)
         except Exception, e:
             raise ImporterError(str(e), traceback=traceback.format_exc())
 
@@ -137,7 +140,7 @@ class Importer(ImporterBase):
             # Should be able to select encoder
             # TODO: Create a wrapper for cPickle, pickle in fallback
             data = cPickle.dumps({'type': type, 'args': args, 'kw': kw}, cPickle.HIGHEST_PROTOCOL)
-            req = urllib2.Request(url=self.__conf__['distant_url'] + path, data=data)
+            req = urllib2.Request(self.__conf__['distant_url'] + path, data, {'WEBENGINE_OUTPUT': 'pickle'})
             f = urllib2.urlopen(req)
             data_read = f.read()
             if data_read == '': return None
