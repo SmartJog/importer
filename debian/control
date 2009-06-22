@@ -9,7 +9,7 @@ Standards-Version: 3.8.0
 Package: importer
 Architecture: all
 Section: python
-Depends: ${python:Depends}
+Depends: ${misc:Depends}, ${python:Depends}
 XB-Python-Version: ${python:Versions}
 Description: Perform remote call through a distant webengine
  Importer allow to transparently perform local or distant calls to
