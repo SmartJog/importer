@@ -141,6 +141,9 @@ class Importer(ImporterBase):
             req = urllib2.Request(self.__conf__['distant_url'] + path, data, {'WEBENGINE_OUTPUT': 'pickle'})
             f = urllib2.urlopen(req)
             data_read = f.read()
+            # We have to set recv to None, because otherwise, circular dependencies leads to memory leaks.
+            f.fp._sock.recv = None
+            f.close()
             if data_read == '': return None
             try:
                 data_decoded = cPickle.loads(data_read)
