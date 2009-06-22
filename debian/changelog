@@ -1,8 +1,8 @@
-importer (0.2.0~dev-1) unstable; urgency=low
+importer (0.2.0-1) unstable; urgency=low
 
   * New upstream release.
 
- -- Thomas Meson <thomas.meson@smartjog.com>  Thu, 14 May 2009 12:37:40 +0200
+ -- Thomas Meson <thomas.meson@smartjog.com>  Mon, 22 Jun 2009 16:27:02 +0200
 
 importer (0.1.0-1) unstable; urgency=low
 
