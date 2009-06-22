@@ -1,3 +1,7 @@
+Version 0.2.1~dev
+
+	* Call only once install_opener.
+
 Version 0.2.0 Released on 2009/06/22
 
 	* Handle SSL certificates. Closes: #1912.

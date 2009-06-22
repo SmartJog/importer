@@ -132,10 +132,8 @@ class Importer(ImporterBase):
         try:
             if not self.__cj__:
                 self.__cj__ = cookielib.CookieJar()
-                opener_cj = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.__cj__))
-                opener_ssl = urllib2.build_opener(ImporterHTTPSHandler(key = self.__conf__.get('ssl_key'), cert = self.__conf__.get('ssl_cert')))
-                urllib2.install_opener(opener_cj)
-                urllib2.install_opener(opener_ssl)
+                opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.__cj__), ImporterHTTPSHandler(key = self.__conf__.get('ssl_key'), cert = self.__conf__.get('ssl_cert')))
+                urllib2.install_opener(opener)
             path = module.replace('.', '/') + '/' #Force trailing slash
             # Should be able to select encoder
             # TODO: Create a wrapper for cPickle, pickle in fallback
