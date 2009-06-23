@@ -1,3 +1,10 @@
+importer (0.2.1-2) unstable; urgency=low
+
+  * New upstream release.
+  * Fix lintian error.
+
+ -- Thomas Meson <thomas.meson@smartjog.com>  Tue, 23 Jun 2009 11:22:50 +0200
+
 importer (0.2.1-1) unstable; urgency=low
 
   * New upstream release.

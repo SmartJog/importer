@@ -11,3 +11,4 @@ PYTHON_PACKAGES := importer
 
 $(patsubst %,binary-install/%,$(PYTHON_PACKAGES)) ::
 	dh_pycentral -p$(cdbs_curpkg)
+	-rmdir $(CURDIR)/debian/$(cdbs_curpkg)/usr/lib
