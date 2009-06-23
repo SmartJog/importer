@@ -1,4 +1,4 @@
-Version 0.2.1~dev
+Version 0.2.1 Released on 2009/06/23
 
 	* Call only once install_opener.
 	* Fix circular dependencies, closes: #2022.
