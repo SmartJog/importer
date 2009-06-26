@@ -1,8 +1,8 @@
-importer (0.2.2~dev-1) unstable; urgency=low
+importer (0.2.2-1) unstable; urgency=low
 
   * New upstream release.
 
- -- Gilles Dartiguelongue <gdartigu@smartjog.com>  Fri, 26 Jun 2009 16:13:02 +0200
+ -- Gilles Dartiguelongue <gdartigu@smartjog.com>  Fri, 26 Jun 2009 16:32:42 +0200
 
 importer (0.2.1-2) unstable; urgency=low
 

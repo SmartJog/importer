@@ -1,4 +1,4 @@
-version 0.2.2~dev
+version 0.2.2 Released on 2009/06/26
 
 	* Fix fd & memory leak on exception, closes: #2062.
 
