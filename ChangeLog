@@ -1,3 +1,7 @@
+version 0.2.2~dev
+
+	* Fix fd & memory leak on exception, closes: #2062.
+
 Version 0.2.1 Released on 2009/06/23
 
 	* Call only once install_opener.

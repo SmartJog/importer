@@ -152,12 +152,24 @@ class Importer(ImporterBase):
                 raise ImporterDeserializeError(data_read, traceback=traceback.format_exc())
         except urllib2.HTTPError, e:
             error = e.read()
+
+            if hasattr(error, 'fp'):
+                # We have to set recv to None, otherwise circular dependencies
+                # leads to memory leaks, see http://bugs.python.org/issue1208304.
+                error.fp.fp._sock.recv = None
+                error.fp.fp.close()
+                error.fp.close()
+
             try:
                 data_decoded = cPickle.loads(error) # Read exception
             except cPickle.UnpicklingError, e:
                 raise ImporterDeserializeError(error, traceback=error)
             raise ImporterError(data_decoded['msg'], local=False, traceback=data_decoded['traceback'])
         except urllib2.URLError, e:
+            if hasattr(error, 'fp'):
+                error.fp.fp._sock.recv = None
+                error.fp.fp.close()
+                error.fp.close()
             raise ImporterConnectError(str(e), traceback=traceback.format_exc())
         except cPickle.PickleError, e:
             raise ImporterSerializeError(str(e), traceback=traceback.format_exc())
