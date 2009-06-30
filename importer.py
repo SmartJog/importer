@@ -83,7 +83,13 @@ class Importer(ImporterBase):
                 return self.__scope__[module].call(method, *args, **kw)
             mod = __import__(module, {}, {}, [''])
             callee = getattr(mod, method)
+            # The __request__ argument is added by the Exporter.
+            # It is used only when the __exportable__ flag is present.
             request = kw.pop('__request__', None)
+            # This attribute means that the callee object is a _Export object
+            # defined by the @exportable decorator.
+            # This is used to distinct between a standard python method, or a
+            # webengine method, because a webengine method need a request object.
             if hasattr(callee, '__exportable__'): return callee(request, *args, **kw)
             else: return getattr(mod, method)(*args, **kw)
         except Exception, e:
