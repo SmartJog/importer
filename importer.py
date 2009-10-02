@@ -159,9 +159,11 @@ class Importer(ImporterBase):
         except urllib2.HTTPError, e:
             error = e.read()
 
-            if hasattr(e, 'fp'):
+            import sys
+            if hasattr(e, 'fp') and sys.version_info[0:2] == (2, 4):
                 # We have to set recv to None, otherwise circular dependencies
                 # leads to memory leaks, see http://bugs.python.org/issue1208304.
+                # Seems to happen only on Python2.4
                 e.fp.fp._sock.recv = None
                 e.fp.fp.close()
                 e.fp.close()

@@ -1,3 +1,7 @@
+Version 0.2.3~dev
+
+	* Python 2.5 compatibility fix wrt urllib2 mem/fd leaks issues.
+
 version 0.2.2 Released on 2009/06/26
 
 	* Fix fd & memory leak on exception, closes: #2062.
