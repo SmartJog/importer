@@ -1,9 +1,9 @@
-importer (0.2.3~dev-1) unstable; urgency=low
+importer (0.2.3-1) unstable; urgency=low
 
   * New upstream release.
   * Added myself to Uploaders.
 
- -- Nicolas Noirbent <nicolas.noirbent@smartjog.com>  Tue, 27 Oct 2009 14:41:46 +0100
+ -- Nicolas Noirbent <nicolas.noirbent@smartjog.com>  Tue, 27 Oct 2009 14:43:56 +0100
 
 importer (0.2.2-1) unstable; urgency=low
 
