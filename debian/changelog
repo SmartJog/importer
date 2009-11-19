@@ -1,3 +1,9 @@
+importer (0.2.4~dev-1) unstable; urgency=low
+
+  * New upstream release, closes: #2652.
+
+ -- Nicolas Noirbent <nicolas.noirbent@smartjog.com>  Thu, 19 Nov 2009 12:05:01 +0100
+
 importer (0.2.3-1) unstable; urgency=low
 
   * New upstream release.

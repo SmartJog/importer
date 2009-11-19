@@ -138,14 +138,13 @@ class Importer(ImporterBase):
         try:
             if not self.__cj__:
                 self.__cj__ = cookielib.CookieJar()
-                opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.__cj__), ImporterHTTPSHandler(key = self.__conf__.get('ssl_key'), cert = self.__conf__.get('ssl_cert')))
-                urllib2.install_opener(opener)
+            opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.__cj__), ImporterHTTPSHandler(key = self.__conf__.get('ssl_key'), cert = self.__conf__.get('ssl_cert')))
             path = module.replace('.', '/') + '/' #Force trailing slash
             # Should be able to select encoder
             # TODO: Create a wrapper for cPickle, pickle in fallback
             data = cPickle.dumps({'type': type, 'args': args, 'kw': kw}, cPickle.HIGHEST_PROTOCOL)
             req = urllib2.Request(self.__conf__['distant_url'] + path, data, {'WEBENGINE_OUTPUT': 'pickle'})
-            f = urllib2.urlopen(req)
+            f = opener.open(req)
             data_read = f.read()
             # We have to set recv to None, because otherwise, circular dependencies leads to memory leaks.
             f.fp._sock.recv = None
