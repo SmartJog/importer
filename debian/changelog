@@ -1,4 +1,4 @@
-importer (0.2.4~dev-1) unstable; urgency=low
+importer (0.2.4-1) unstable; urgency=low
 
   [ Nicolas Noirbent ]
   * New upstream release, closes: #2652.
@@ -7,7 +7,7 @@ importer (0.2.4~dev-1) unstable; urgency=low
   * Put Philippe Bridant as Maintainer.
   * Replace usage of gdartigu by gilles.dartiguelongue.
 
- -- Gilles Dartiguelongue <gilles.dartiguelongue@smartjog.com>  Wed, 09 Dec 2009 16:56:00 +0100
+ -- Gilles Dartiguelongue <gilles.dartiguelongue@smartjog.com>  Wed, 09 Dec 2009 16:57:04 +0100
 
 importer (0.2.3-1) unstable; urgency=low
 

@@ -1,4 +1,4 @@
-Version 0.2.4~dev
+Version 0.2.4 Released on 2009/12/09
 
 	* Fix issues when using several Importer instances, closes: #2652.
 
