@@ -1,6 +1,6 @@
 """ Importer """
 
-import traceback, os, cookielib, urllib2, httplib
+import traceback, os, cookielib, urllib2, httplib, socket
 from exc import *
 
 __all__ = ['ImporterError', 'ImporterDeserializeError', 'ImporterSerializeError', 'ImporterConnectError', 'Importer']
@@ -138,6 +138,10 @@ class Importer(ImporterBase):
         try:
             if not self.__cj__:
                 self.__cj__ = cookielib.CookieJar()
+            if 'timeout' in self.__conf__.keys():
+                socket.setdefaulttimeout(self.__conf__['timeout'])
+            else:
+                socket.setdefaulttimeout(30)
             opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.__cj__), ImporterHTTPSHandler(key = self.__conf__.get('ssl_key'), cert = self.__conf__.get('ssl_cert')))
             path = module.replace('.', '/') + '/' #Force trailing slash
             # Should be able to select encoder
