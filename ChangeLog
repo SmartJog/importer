@@ -1,4 +1,4 @@
-Version 0.2.5~dev
+Version 0.2.5 Released on 2010/01/12
 
 	* Set TCP timeout to 30 sec, add property to change it, closes: #2595.
 
