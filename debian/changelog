@@ -1,8 +1,9 @@
 importer (0.2.5-2~dev) unstable; urgency=low
 
   * Added myself to Uploaders.
+  * Update packaging for Lenny.
 
- -- Rémi Cardona <remi.cardona@smartjog.com>  Tue, 12 Jan 2010 11:46:39 +0100
+ -- Rémi Cardona <remi.cardona@smartjog.com>  Tue, 17 Mar 2010 11:46:39 +0100
 
 importer (0.2.5-1) unstable; urgency=low
 
