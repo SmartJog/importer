@@ -6,6 +6,7 @@ importer (0.2.6~dev-1) unstable; urgency=low
 
   [ Clément Bœsch ]
   * Added myself to Uploaders.
+  * Add txt2tags in build-deps.
 
  -- Clément Bœsch <clement.boesch@smartjog.com>  Fri, 02 Apr 2010 14:51:29 +0200
 
