@@ -1,0 +1,89 @@
+IMPORTER
+Importer
+%%mtime
+
+%!target : man
+%!encoding : utf-8
+%!postproc(man): "^(\.TH.*) 1 "  "\1 8 "
+
+
+= DESCRIPTION =
+
+The Importer provides a way to call a remote procedure and retrieve its results
+in a native format.
+
+
+= Exporter side =
+
+The exporter is the webengine website part which performs the request and
+returns the result. This result is automatically returned serialized using
+(C)Pickle. The webengine may also handle SOAP, JSON, etc.
+
+
+== Example ==
+
+Here is an example of an **get_listing** function from a fictive
+**webengine-ls** plugin:
+
+```
+from webengine.utils.decorators import exportable
+import os
+
+@exportable
+def get_listing(request, path, useless_param):
+    return {'path': path, 'files': os.listdir(path)}
+```
+
+The **@exportable** decorator is mandatory as it allows to get the function
+accessible in the webservice.
+
+
+= Importer side =
+
+The importer allows you to call exported functions and get the results in python
+objects.
+
+A few optional parameters are available to customize the access:
+
+**distant_url**: by default, the request is made locally. You can use this
+parameter to specifiy a remote url.
+
+**ssl_cert**: path to the SSL certificate.
+
+**ssl_key**: path to the SSL Key.
+
+**timeout**: Socket timeout is set to 30 per default. You can change it using
+this option.
+
+
+There is 3 available methods:
+
+**call()**: to simply call the the method with the given arguments
+
+**get()**: to retrieve an attribut from the given module
+
+**set()**: to set an attribut in the given module
+
+
+== Example ==
+
+```
+from importer import Importer
+
+imp = Importer()
+
+# the trailing / is significant
+imp['distant_url'] = 'https://host/exporter/'
+
+# add this if needed
+imp['ssl_cert] = '/path/to/cert'
+imp['ssl_key'] = '/path/to/key'
+
+# get_listing() method takes the path and a useless parameter. The following
+# code will perform a POST request at /exporter/ls/services/get_listing on the
+# specified host:
+res = imp.call('ls.services', 'get_listing', path='/home', useless_param=28)
+```
+
+**res** now contains the **dict** returned by the **get_listing** function (see
+above).

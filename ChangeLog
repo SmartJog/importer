@@ -1,3 +1,7 @@
+Version 0.2.6~dev
+
+	* Add importer doc.
+
 Version 0.2.5 Released on 2010/01/12
 
 	* Set TCP timeout to 30 sec, add property to change it, closes: #2595.
