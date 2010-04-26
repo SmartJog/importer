@@ -1,4 +1,4 @@
-importer (0.2.6~dev-1) unstable; urgency=low
+importer (0.2.6-1) unstable; urgency=low
 
   [ Rémi Cardona ]
   * Added myself to Uploaders.
@@ -8,7 +8,7 @@ importer (0.2.6~dev-1) unstable; urgency=low
   * Added myself to Uploaders.
   * Add txt2tags in build-deps.
 
- -- Clément Bœsch <clement.boesch@smartjog.com>  Fri, 02 Apr 2010 14:51:29 +0200
+ -- Rémi Cardona <remi.cardona@smartjog.com>  Mon, 26 Apr 2010 11:37:27 +0200
 
 importer (0.2.5-1) unstable; urgency=low
 
