@@ -1,6 +1,8 @@
 """ Importer """
 
 import traceback, os, cookielib, urllib2, httplib, socket
+import cStringIO
+import gzip
 from exc import *
 
 __all__ = ['ImporterError', 'ImporterDeserializeError', 'ImporterSerializeError', 'ImporterConnectError', 'Importer']
@@ -148,8 +150,16 @@ class Importer(ImporterBase):
             # TODO: Create a wrapper for cPickle, pickle in fallback
             data = cPickle.dumps({'type': type, 'args': args, 'kw': kw}, cPickle.HIGHEST_PROTOCOL)
             req = urllib2.Request(self.__conf__['distant_url'] + path, data, {'WEBENGINE_OUTPUT': 'pickle'})
+            # We accept gzipped content
+            req.add_header('Accept-Encoding', 'gzip')
             f = opener.open(req)
-            data_read = f.read()
+            if f.headers.get('Content-Encoding') == 'gzip':
+                # Decompress the data
+                data_compressed = cStringIO.StringIO(f.read())
+                gzip_decompressor = gzip.GzipFile(fileobj = data_compressed)
+                data_read = gzip_decompressor.read()
+            else:
+                data_read = f.read()
             # We have to set recv to None, because otherwise, circular dependencies leads to memory leaks.
             f.fp._sock.recv = None
             f.close()

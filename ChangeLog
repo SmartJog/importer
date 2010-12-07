@@ -1,3 +1,7 @@
+Version 0.3.0~dev
+
+	* Add gzip Accept-Encoding / Content-Encoding support, closes: #3717.
+
 Version 0.2.6 Released on 2010/04/26
 
 	* Add importer doc.
