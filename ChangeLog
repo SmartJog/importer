@@ -1,4 +1,4 @@
-Version 0.3.0~dev
+Version 0.3.0 Released on 2010/12/09
 
 	* Add gzip Accept-Encoding / Content-Encoding support, closes: #3717.
 
