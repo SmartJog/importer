@@ -6,6 +6,9 @@ Importer
 %!encoding : utf-8
 %!postproc(man): "^(\.TH.*) 1 "  "\1 8 "
 
+= NAME =
+
+Importer - A Python module for remote procedure calls over HTTP
 
 = DESCRIPTION =
 
