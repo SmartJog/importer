@@ -1,3 +1,7 @@
+Version 0.3.2~dev
+
+	* Add bin/importer script.
+
 Version 0.3.1 Released on 2010/12/14
 
 	* Add missing NAME section to the man page.

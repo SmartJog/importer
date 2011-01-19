@@ -1,3 +1,9 @@
+importer (0.3.2~dev-3) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Philippe Bridant <philippe.bridant@smartjog.com>  Wed, 19 Jan 2011 16:25:31 +0100
+
 importer (0.3.1-1) unstable; urgency=low
 
   * New upstream release.

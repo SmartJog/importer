@@ -90,3 +90,11 @@ res = imp.call('ls.services', 'get_listing', path='/home', useless_param=28)
 
 **res** now contains the **dict** returned by the **get_listing** function (see
 above).
+
+== Binary ==
+
+The 'importer' package comes with a binary also named 'importer' that can be used to run a call a distant function and pretty print the result.
+
+Usage: HOST|URL MODULE FUNC [params],...
+
+Parameters types can be give by using **int:** or **bool:** before the parameter value (eg: bool:true).
