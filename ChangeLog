@@ -1,3 +1,7 @@
+Version 0.3.3~dev
+
+	* Decompress error message when http errors occur, closes: #3898.
+
 Version 0.3.2 Released on 2011/01/19
 
 	* Add bin/importer script.

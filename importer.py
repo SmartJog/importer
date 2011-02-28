@@ -170,7 +170,11 @@ class Importer(ImporterBase):
             except cPickle.UnpicklingError:
                 raise ImporterDeserializeError(data_read, traceback=traceback.format_exc())
         except urllib2.HTTPError, e:
-            error = e.read()
+            if e.headers.get('Content-Encoding', 'gzip'):
+                error_compressed = e.read()
+                error = gzip.GzipFile(fileobj=cStringIO.StringIO(error_compressed)).read()
+            else:
+                error = e.read()
 
             import sys
             if hasattr(e, 'fp') and sys.version_info[0:2] == (2, 4):
