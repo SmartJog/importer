@@ -1,4 +1,4 @@
-Version 0.3.3~dev
+Version 0.3.3 Released on 2011/03/01
 
 	* Decompress error message when http errors occur, closes: #3898.
 
