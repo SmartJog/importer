@@ -1,3 +1,8 @@
+Version 0.3.4~dev
+
+	* Actually do Content-Encoding checking in error handling,
+	  closes: #3898.
+
 Version 0.3.3 Released on 2011/03/01
 
 	* Decompress error message when http errors occur, closes: #3898.
