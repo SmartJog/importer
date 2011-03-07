@@ -178,6 +178,10 @@ class Importer(ImporterBase):
             else:
                 error = e.read()
 
+            # Most likely a normal HTTP server error
+            if e.headers.get('Content-Type') != 'application/octet-stream':
+                raise ImporterError(str(e), local=False)
+
             import sys
             if hasattr(e, 'fp') and sys.version_info[0:2] == (2, 4):
                 # We have to set recv to None, otherwise circular dependencies

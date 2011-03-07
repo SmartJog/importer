@@ -2,6 +2,7 @@ Version 0.3.4~dev
 
 	* Actually do Content-Encoding checking in error handling,
 	  closes: #3898.
+	* Do not try to handle non-exporter-origined exceptions, closes: #4036.
 
 Version 0.3.3 Released on 2011/03/01
 
