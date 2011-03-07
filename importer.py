@@ -160,9 +160,6 @@ class Importer(ImporterBase):
                 data_read = gzip_decompressor.read()
             else:
                 data_read = f.read()
-            # We have to set recv to None, because otherwise, circular dependencies leads to memory leaks.
-            f.fp._sock.recv = None
-            f.close()
             if data_read == '': return None
             try:
                 data_decoded = cPickle.loads(data_read)
@@ -182,25 +179,12 @@ class Importer(ImporterBase):
             if e.headers.get('Content-Type') != 'application/octet-stream':
                 raise ImporterError(str(e), local=False)
 
-            import sys
-            if hasattr(e, 'fp') and sys.version_info[0:2] == (2, 4):
-                # We have to set recv to None, otherwise circular dependencies
-                # leads to memory leaks, see http://bugs.python.org/issue1208304.
-                # Seems to happen only on Python2.4
-                e.fp.fp._sock.recv = None
-                e.fp.fp.close()
-                e.fp.close()
-
             try:
                 data_decoded = cPickle.loads(error) # Read exception
             except cPickle.UnpicklingError, e:
                 raise ImporterDeserializeError(error, traceback=error)
             raise ImporterError(data_decoded['msg'], local=False, traceback=data_decoded['traceback'])
         except urllib2.URLError, e:
-            if hasattr(e, 'fp'):
-                e.fp.fp._sock.recv = None
-                e.fp.fp.close()
-                e.fp.close()
             raise ImporterConnectError(str(e), traceback=traceback.format_exc())
         except cPickle.PickleError, e:
             raise ImporterSerializeError(str(e), traceback=traceback.format_exc())
