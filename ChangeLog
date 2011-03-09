@@ -1,4 +1,4 @@
-Version 0.3.4~dev
+Version 0.3.4 Released on 2011/03/09
 
 	* Actually do Content-Encoding checking in error handling,
 	  closes: #3898.
