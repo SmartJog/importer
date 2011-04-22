@@ -188,4 +188,3 @@ class Importer(ImporterBase):
             raise ImporterConnectError(str(e), traceback=traceback.format_exc())
         except cPickle.PickleError, e:
             raise ImporterSerializeError(str(e), traceback=traceback.format_exc())
-

@@ -20,5 +20,3 @@ class ImporterSerializeError(ImporterError):
 class ImporterConnectError(ImporterError):
     """ Error when connecting to remote exporter. """
     pass
-
-
