@@ -1,3 +1,10 @@
+importer (0.3.5~dev-1) unstable; urgency=low
+
+  * New upstream release.
+  * Now released under the LGPL-2.1.
+
+ -- Anthony Mavic <anthony.mavic@smartjog.com>  Fri, 22 Apr 2011 15:22:27 +0200
+
 importer (0.3.4-1) unstable; urgency=low
 
   * New upstream release, closes: #3898, #4036.
