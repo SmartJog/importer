@@ -5,7 +5,7 @@
 import traceback, cookielib, urllib2, httplib, socket
 import cStringIO
 import gzip
-from exc import *
+from exc import ImporterError, ImporterDeserializeError, ImporterSerializeError, ImporterConnectError
 
 __all__ = ['ImporterError', 'ImporterDeserializeError', 'ImporterSerializeError', 'ImporterConnectError', 'Importer']
 
