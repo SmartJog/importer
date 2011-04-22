@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 class ImporterError(Exception):
     """ Raised when something happen in Importer."""
     def __init__(self, msg, local=True, traceback=''):

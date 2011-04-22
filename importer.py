@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """ Importer """
 
 import traceback, os, cookielib, urllib2, httplib, socket
