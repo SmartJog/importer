@@ -2,7 +2,7 @@
 
 """ Importer """
 
-import traceback, os, cookielib, urllib2, httplib, socket
+import traceback, cookielib, urllib2, httplib, socket
 import cStringIO
 import gzip
 from exc import *
