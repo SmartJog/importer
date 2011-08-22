@@ -2,10 +2,10 @@ Source: importer
 Section: python
 Priority: optional
 Maintainer: Philippe Bridant <philippe.bridant@smartjog.com>
-Uploaders: Gilles Dartiguelongue <gilles.dartiguelongue@smartjog.com>, Nicolas Noirbent <nicolas.noirbent@smartjog.com>, Rémi Cardona <remi.cardona@smartjog.com>, Clément Bœsch <clement.boesch@smartjog.com>, Anthony Mavic <anthony.mavic@smartjog.com>
-Build-Depends: debhelper (>= 5.0.38), cdbs, python-central (>= 0.6), txt2tags
-XS-Python-Version: >= 2.5
-Standards-Version: 3.8.4
+Uploaders: Gilles Dartiguelongue <gilles.dartiguelongue@smartjog.com>, Nicolas Noirbent <nicolas.noirbent@smartjog.com>, Rémi Cardona <remi.cardona@smartjog.com>, Clément Bœsch <clement.boesch@smartjog.com>, Anthony Mavic <anthony.mavic@smartjog.com>, Laurent Defert <laurent.defert@smartjog.com>
+Build-Depends: debhelper (>= 8), cdbs, python-central (>= 0.6), txt2tags
+XS-Python-Version: >= 2.6
+Standards-Version: 3.9.1
 
 Package: importer
 Architecture: all
