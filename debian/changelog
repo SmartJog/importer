@@ -1,3 +1,10 @@
+importer (0.4.0~dev-1) unstable; urgency=low
+
+  * New upstream release.
+  * Add msgpack-python and python-django to Recommends.
+
+ -- Gilles Dartiguelongue <gilles.dartiguelongue@smartjog.com>  Fri, 25 May 2012 16:48:26 +0200
+
 importer (0.3.5-2) unstable; urgency=low
 
   * Update debian/control Build-Depends, Standards-Version.

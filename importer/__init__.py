@@ -5,7 +5,9 @@
 import traceback, cookielib, urllib2, httplib, socket
 import cStringIO
 import gzip
-from exc import ImporterError, ImporterDeserializeError, ImporterSerializeError, ImporterConnectError
+from importer.exc import ImporterError, ImporterDeserializeError, ImporterSerializeError, ImporterConnectError
+from importer.decoders import DecoderFactory
+from importer.generators import GeneratorFactory
 
 __all__ = ['ImporterError', 'ImporterDeserializeError', 'ImporterSerializeError', 'ImporterConnectError', 'Importer']
 
@@ -138,7 +140,6 @@ class Importer(ImporterBase):
 
     def __perform_distant__(self, module, type, *args, **kw):
         """ Perform the distant call. """
-        import cPickle
         try:
             if not self.__cj__:
                 self.__cj__ = cookielib.CookieJar()
@@ -148,12 +149,13 @@ class Importer(ImporterBase):
                 socket.setdefaulttimeout(30)
             opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.__cj__), ImporterHTTPSHandler(key = self.__conf__.get('ssl_key'), cert = self.__conf__.get('ssl_cert')))
             path = module.replace('.', '/') + '/' #Force trailing slash
-            # Should be able to select encoder
-            # TODO: Create a wrapper for cPickle, pickle in fallback
-            data = cPickle.dumps({'type': type, 'args': args, 'kw': kw}, cPickle.HIGHEST_PROTOCOL)
-            req = urllib2.Request(self.__conf__['distant_url'] + path, data, {'WEBENGINE_OUTPUT': 'pickle'})
+            # Serialize with serialization method provided in configuration
+            serializer = GeneratorFactory.get(self.__conf__.get('serialization', 'pickle'))
+            data = serializer.generate({'type': type, 'args': args, 'kw': kw})
+            req = urllib2.Request(self.__conf__['distant_url'] + path, data, {'WEBENGINE_OUTPUT': self.__conf__.get('serialization', 'pickle')})
             # We accept gzipped content
             req.add_header('Accept-Encoding', 'gzip')
+            req.add_header('Content-Type', serializer.mime_type)
             f = opener.open(req)
             if f.headers.get('Content-Encoding') == 'gzip':
                 # Decompress the data
@@ -164,9 +166,10 @@ class Importer(ImporterBase):
                 data_read = f.read()
             if data_read == '': return None
             try:
-                data_decoded = cPickle.loads(data_read)
+                serializer = DecoderFactory.get(self.__conf__.get('serialization', 'pickle'))
+                data_decoded = serializer.decode(data_read)
                 return data_decoded
-            except cPickle.UnpicklingError:
+            except Exception:
                 raise ImporterDeserializeError(data_read, traceback=traceback.format_exc())
         except urllib2.HTTPError, e:
             if e.headers.get('Content-Encoding') == 'gzip':
@@ -182,11 +185,12 @@ class Importer(ImporterBase):
                 raise ImporterError(str(e), local=False)
 
             try:
-                data_decoded = cPickle.loads(error) # Read exception
-            except cPickle.UnpicklingError, e:
+                serializer = DecoderFactory.get(self.__conf__.get('serialization', 'pickle'))
+                data_decoded = serializer.decode(error)  # Read exception
+            except Exception, e:
                 raise ImporterDeserializeError(error, traceback=error)
             raise ImporterError(data_decoded['msg'], local=False, traceback=data_decoded['traceback'])
         except urllib2.URLError, e:
             raise ImporterConnectError(str(e), traceback=traceback.format_exc())
-        except cPickle.PickleError, e:
+        except Exception, e:
             raise ImporterSerializeError(str(e), traceback=traceback.format_exc())

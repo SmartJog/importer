@@ -11,6 +11,7 @@ Package: importer
 Architecture: all
 Section: python
 Depends: ${misc:Depends}, ${python:Depends}
+Suggests: msgpack-python, python-django
 XB-Python-Version: ${python:Versions}
 Description: Perform remote call through a distant webengine
  Importer allow to transparently perform local or distant calls to
