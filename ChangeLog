@@ -1,6 +1,7 @@
 Version 0.4.0~dev
 
 	* Make importer support multiple serialization format.
+	* Pylint/PEP8 pass on bin/importer.
 
 Version 0.3.5 Released on 2011/04/22
 

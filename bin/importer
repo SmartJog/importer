@@ -1,30 +1,44 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import sys,importer,pprint
+""" Simple command line tool to test importer. """
 
-if len(sys.argv[1:]) < 3:
-    print "Usage: %s HOST|URL MODULE FUNC [params],..." % sys.argv[0]
-    sys.exit(1)
+import sys
+import importer
+import pprint
 
-i=importer.Importer()
 
-if sys.argv[1].startswith("http://") or sys.argv[1].startswith("https://"):
-    i['distant_url'] = sys.argv[1]
-else:
-    i['distant_url'] = "https://%s/exporter/" % sys.argv[1]
+def main():
+    """ The magic happens here. """
 
-module = sys.argv[2]
-func = sys.argv[3]
+    if len(sys.argv[1:]) < 3:
+        print "Usage: %s HOST|URL MODULE FUNC [params],..." % sys.argv[0]
+        sys.exit(1)
 
-params = []
-for param in sys.argv[4:]:
-    if param.startswith('bool:'):
-        param = param[5:].lower() == 'true'
-    elif param.startswith('int:'):
-        param=int(param[4:])
-    params += [param]
+    imp = importer.Importer()
 
-print "Calling %s.%s with params %s on %s" % (module, func, str(params), i['distant_url'])
+    if sys.argv[1].startswith("http://") or sys.argv[1].startswith("https://"):
+        imp['distant_url'] = sys.argv[1]
+    else:
+        imp['distant_url'] = "https://%s/exporter/" % sys.argv[1]
 
-pprint.pprint(i.call(module, func, *params))
+    module = sys.argv[2]
+    func = sys.argv[3]
+
+    params = []
+    for param in sys.argv[4:]:
+        if param.startswith('bool:'):
+            param = param[5:].lower() == 'true'
+        elif param.startswith('int:'):
+            param = int(param[4:])
+        params += [param]
+
+    print "Calling %s.%s with params %s on %s" % (
+        module, func, str(params), imp['distant_url'],
+    )
+
+    pprint.pprint(imp.call(module, func, *params))
+
+
+if __name__ == '__main__':
+    main()
