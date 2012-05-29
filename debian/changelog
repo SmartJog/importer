@@ -3,8 +3,9 @@ importer (0.4.0~dev-1) unstable; urgency=low
   * New upstream release.
   * Add msgpack-python and python-django to Recommends.
   * Drop useless empty docs file.
+  * Switch to dpkg-source 3.0 (quilt) format.
 
- -- Gilles Dartiguelongue <gilles.dartiguelongue@smartjog.com>  Fri, 25 May 2012 16:48:26 +0200
+ -- Gilles Dartiguelongue <gilles.dartiguelongue@smartjog.com>  Tue, 29 May 2012 11:29:54 +0200
 
 importer (0.3.5-2) unstable; urgency=low
 
