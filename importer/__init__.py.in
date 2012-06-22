@@ -2,9 +2,14 @@
 
 """ Importer """
 
-import traceback, cookielib, urllib2, httplib, socket
+import traceback
+import cookielib
+import urllib2
+import httplib
+import socket
 import cStringIO
 import gzip
+
 from importer.exc import ImporterError, ImporterDeserializeError, ImporterSerializeError, ImporterConnectError
 from importer.decoders import DecoderFactory
 from importer.generators import GeneratorFactory
@@ -24,8 +29,9 @@ class ImporterHTTPSHandler(urllib2.HTTPSHandler):
     def https_open(self, req):
         return self.do_open(self.create_conn, req)
 
-    def create_conn(self, host, timeout = 300):
-        return httplib.HTTPSConnection(host, key_file = self.key, cert_file = self.cert)
+    def create_conn(self, host, timeout=300):
+        return httplib.HTTPSConnection(host, key_file=self.key, cert_file=self.cert)
+
 
 class ImporterBase(object):
     """
@@ -60,12 +66,14 @@ class ImporterBase(object):
         """ Getattr self.__objinst__ and returns. """
         return getattr(self.__objinst__, attr)
 
+
 class ImporterVariable(ImporterBase):
-    def __init__(self, conf, module, klass, *args, **kw):
+    def __init__(self, _conf, module, klass, *args, **kw):
         ImporterBase.__init__(self)
         self.__mod__ = module
         self.__klass__ = klass
         self.__objinst__ = self.__mod__.get(self.__klass__)(*args, **kw)
+
 
 class Importer(ImporterBase):
     """
@@ -87,8 +95,9 @@ class Importer(ImporterBase):
         if 'distant_url' in self.__conf__.keys():
             mod = '.'.join((module, method))
             return self.__perform_distant__(mod, 'call', *args, **kw)
+
         try:
-            if module in self.__scope__.keys(): # Class instance
+            if module in self.__scope__.keys():  # Class instance
                 return self.__scope__[module].call(method, *args, **kw)
             mod = __import__(module, {}, {}, [''])
             callee = getattr(mod, method)
@@ -99,23 +108,27 @@ class Importer(ImporterBase):
             # defined by the @exportable decorator.
             # This is used to distinct between a standard python method, or a
             # webengine method, because a webengine method need a request object.
-            if hasattr(callee, '__exportable__'): return callee(request, *args, **kw)
-            else: return getattr(mod, method)(*args, **kw)
-        except Exception, e:
-            raise ImporterError(str(e), traceback=traceback.format_exc())
+            if hasattr(callee, '__exportable__'):
+                return callee(request, *args, **kw)
+            else:
+                return getattr(mod, method)(*args, **kw)
+
+        except Exception, exc:
+            raise ImporterError(str(exc), traceback=traceback.format_exc())
 
     def get(self, module, attr):
         """ Retrieve an attr from the given module. """
         if 'distant_url' in self.__conf__.keys():
             mod = '.'.join((module, attr))
             return self.__perform_distant__(mod, 'get')
+
         try:
-            if module in self.__scope__.keys(): # Class instance
+            if module in self.__scope__.keys():  # Class instance
                 return self.__scope__[module].get(attr)
             mod = __import__(module, {}, {}, [''])
             return getattr(mod, attr)
-        except Exception, e:
-            raise ImporterError(str(e), traceback=traceback.format_exc())
+        except Exception, exc:
+            raise ImporterError(str(exc), traceback=traceback.format_exc())
 
     def instantiate(self, variable, module, klass, *args, **kw):
         """
@@ -126,75 +139,94 @@ class Importer(ImporterBase):
         if 'distant_url' in self.__conf__.keys():
             mod = '.'.join((module, klass))
             return self.__perform_distant__(mod, 'instantiate', variable=variable, *args, **kw)
+
         try:
-            if variable in self.__scope__.keys(): return
+            if variable in self.__scope__.keys():
+                return
             module = self.__load_module__(module)
             self.__scope__[variable] = ImporterVariable(self.__conf__, module, klass, *args, **kw)
-        except Exception, e:
-            raise ImporterError(str(e), traceback=traceback.format_exc())
+
+        except Exception, exc:
+            raise ImporterError(str(exc), traceback=traceback.format_exc())
 
     def _set_bound(self, bound):
         """ Bound Importer scope to "bound" list. """
         self.__bound__ = bound
+
     def _get_bound(self):
         """ Returns bound list. """
         return self.__bound__
+
     bound = property(_get_bound, _set_bound)
 
-    def __perform_distant__(self, module, type, *args, **kw):
+    def __perform_distant__(self, module, call_type, *args, **kw):
         """ Perform the distant call. """
         try:
             if not self.__cj__:
                 self.__cj__ = cookielib.CookieJar()
+
             if 'timeout' in self.__conf__.keys():
                 socket.setdefaulttimeout(self.__conf__['timeout'])
             else:
                 socket.setdefaulttimeout(30)
-            opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.__cj__), ImporterHTTPSHandler(key = self.__conf__.get('ssl_key'), cert = self.__conf__.get('ssl_cert')))
-            path = module.replace('.', '/') + '/' #Force trailing slash
+
+            opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.__cj__),
+                ImporterHTTPSHandler(key=self.__conf__.get('ssl_key'), cert=self.__conf__.get('ssl_cert')))
+            path = module.replace('.', '/') + '/'  # Force trailing slash
+
             # Serialize with serialization method provided in configuration
             serializer = GeneratorFactory.get(self.__conf__.get('serialization', 'pickle'))
-            data = serializer.generate({'type': type, 'args': args, 'kw': kw})
-            req = urllib2.Request(self.__conf__['distant_url'] + path, data, {'WEBENGINE_OUTPUT': self.__conf__.get('serialization', 'pickle')})
+            data = serializer.generate({'type': call_type, 'args': args, 'kw': kw})
+            req = urllib2.Request(self.__conf__['distant_url'] + path, data,
+                {'WEBENGINE_OUTPUT': self.__conf__.get('serialization', 'pickle')})
+
             # We accept gzipped content
             req.add_header('Accept-Encoding', 'gzip')
             req.add_header('Content-Type', serializer.mime_type)
             req.add_header('User-Agent', self.__conf__.get('user_agent', 'Importer/' + VERSION))
-            f = opener.open(req)
-            if f.headers.get('Content-Encoding') == 'gzip':
+            fdr = opener.open(req)
+
+            if fdr.headers.get('Content-Encoding') == 'gzip':
                 # Decompress the data
-                data_compressed = cStringIO.StringIO(f.read())
-                gzip_decompressor = gzip.GzipFile(fileobj = data_compressed)
+                data_compressed = cStringIO.StringIO(fdr.read())
+                gzip_decompressor = gzip.GzipFile(fileobj=data_compressed)
                 data_read = gzip_decompressor.read()
             else:
-                data_read = f.read()
-            if data_read == '': return None
+                data_read = fdr.read()
+
+            if data_read == '':
+                return None
+
             try:
                 serializer = DecoderFactory.get(self.__conf__.get('serialization', 'pickle'))
                 data_decoded = serializer.decode(data_read)
                 return data_decoded
             except Exception:
                 raise ImporterDeserializeError(data_read, traceback=traceback.format_exc())
-        except urllib2.HTTPError, e:
-            if e.headers.get('Content-Encoding') == 'gzip':
+
+        except urllib2.HTTPError, exc:
+            if exc.headers.get('Content-Encoding') == 'gzip':
                 # Decompress the data
-                data_compressed = cStringIO.StringIO(e.read())
-                gzip_decompressor = gzip.GzipFile(fileobj = data_compressed)
+                data_compressed = cStringIO.StringIO(exc.read())
+                gzip_decompressor = gzip.GzipFile(fileobj=data_compressed)
                 error = gzip_decompressor.read()
             else:
-                error = e.read()
+                error = exc.read()
 
             # Most likely a normal HTTP server error
-            if e.headers.get('Content-Type') != 'application/octet-stream':
-                raise ImporterError(str(e), local=False)
+            if exc.headers.get('Content-Type') != 'application/octet-stream':
+                raise ImporterError(str(exc), local=False)
 
             try:
                 serializer = DecoderFactory.get(self.__conf__.get('serialization', 'pickle'))
                 data_decoded = serializer.decode(error)  # Read exception
-            except Exception, e:
+            except Exception, exc:
                 raise ImporterDeserializeError(error, traceback=error)
+
             raise ImporterError(data_decoded['msg'], local=False, traceback=data_decoded['traceback'])
-        except urllib2.URLError, e:
-            raise ImporterConnectError(str(e), traceback=traceback.format_exc())
-        except Exception, e:
-            raise ImporterSerializeError(str(e), traceback=traceback.format_exc())
+
+        except urllib2.URLError, exc:
+            raise ImporterConnectError(str(exc), traceback=traceback.format_exc())
+
+        except Exception, exc:
+            raise ImporterSerializeError(str(exc), traceback=traceback.format_exc())
