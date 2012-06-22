@@ -177,13 +177,13 @@ class Importer(ImporterBase):
             # Serialize with serialization method provided in configuration
             serializer = GeneratorFactory.get(self.__conf__.get('serialization', 'pickle'))
             data = serializer.generate({'type': call_type, 'args': args, 'kw': kw})
-            req = urllib2.Request(self.__conf__['distant_url'] + path, data,
-                {'WEBENGINE_OUTPUT': self.__conf__.get('serialization', 'pickle')})
+            req = urllib2.Request(self.__conf__['distant_url'] + path, data, {
+                    'WEBENGINE_OUTPUT': self.__conf__.get('serialization', 'pickle'),
+                    'Accept-Encoding': 'gzip',  # We accept gzipped content
+                    'Content-Type': serializer.mime_type,
+                    'User-Agent': self.__conf__.get('user_agent', 'Importer/' + VERSION),
+            })
 
-            # We accept gzipped content
-            req.add_header('Accept-Encoding', 'gzip')
-            req.add_header('Content-Type', serializer.mime_type)
-            req.add_header('User-Agent', self.__conf__.get('user_agent', 'Importer/' + VERSION))
             fdr = opener.open(req)
 
             if fdr.headers.get('Content-Encoding') == 'gzip':
