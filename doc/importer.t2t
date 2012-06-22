@@ -58,6 +58,11 @@ parameter to specifiy a remote url.
 **timeout**: Socket timeout is set to 30 per default. You can change it using
 this option.
 
+**serialization**: Change serialization method.
+Available methods are pickle, msgpack, json.
+
+**user_agent**: Change User-Agent header sent in order to identify your program.
+The default value is Importer/$importer_version.
 
 There is 3 available methods:
 
