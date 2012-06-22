@@ -159,6 +159,19 @@ class Importer(ImporterBase):
 
     bound = property(_get_bound, _set_bound)
 
+    @staticmethod
+    def __decompress__(fdr):
+        """ Transparently decompresses data read from @fdr. """
+        if fdr.headers.get('Content-Encoding') == 'gzip':
+            # Decompress the data
+            data_compressed = cStringIO.StringIO(fdr.read())
+            gzip_decompressor = gzip.GzipFile(fileobj=data_compressed)
+            data_read = gzip_decompressor.read()
+        else:
+            data_read = fdr.read()
+
+        return data_read
+
     def __perform_distant__(self, module, call_type, *args, **kw):
         """ Perform the distant call. """
         try:
@@ -185,14 +198,7 @@ class Importer(ImporterBase):
             })
 
             fdr = opener.open(req)
-
-            if fdr.headers.get('Content-Encoding') == 'gzip':
-                # Decompress the data
-                data_compressed = cStringIO.StringIO(fdr.read())
-                gzip_decompressor = gzip.GzipFile(fileobj=data_compressed)
-                data_read = gzip_decompressor.read()
-            else:
-                data_read = fdr.read()
+            data_read = self.__decompress__(fdr)
 
             if data_read == '':
                 return None
@@ -205,13 +211,7 @@ class Importer(ImporterBase):
                 raise ImporterDeserializeError(data_read, traceback=traceback.format_exc())
 
         except urllib2.HTTPError, exc:
-            if exc.headers.get('Content-Encoding') == 'gzip':
-                # Decompress the data
-                data_compressed = cStringIO.StringIO(exc.read())
-                gzip_decompressor = gzip.GzipFile(fileobj=data_compressed)
-                error = gzip_decompressor.read()
-            else:
-                error = exc.read()
+            error = self.__decompress__(exc)
 
             # Most likely a normal HTTP server error
             if exc.headers.get('Content-Type') != 'application/octet-stream':
