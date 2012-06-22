@@ -11,6 +11,9 @@ from importer.generators import GeneratorFactory
 
 __all__ = ['ImporterError', 'ImporterDeserializeError', 'ImporterSerializeError', 'ImporterConnectError', 'Importer']
 
+VERSION = "@PACKAGE_VERSION@"
+
+
 class ImporterHTTPSHandler(urllib2.HTTPSHandler):
     """ To be used by urllib2, wrap calls to httplib. """
     def __init__(self, key, cert):
@@ -156,6 +159,7 @@ class Importer(ImporterBase):
             # We accept gzipped content
             req.add_header('Accept-Encoding', 'gzip')
             req.add_header('Content-Type', serializer.mime_type)
+            req.add_header('User-Agent', self.__conf__.get('user_agent', 'Importer/' + VERSION))
             f = opener.open(req)
             if f.headers.get('Content-Encoding') == 'gzip':
                 # Decompress the data
