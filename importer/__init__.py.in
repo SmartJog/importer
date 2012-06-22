@@ -190,7 +190,8 @@ class Importer(ImporterBase):
             # Serialize with serialization method provided in configuration
             serializer = GeneratorFactory.get(self.__conf__.get('serialization', 'pickle'))
             data = serializer.generate({'type': call_type, 'args': args, 'kw': kw})
-            req = urllib2.Request(self.__conf__['distant_url'] + path, data, {
+            req = urllib2.Request(self.__conf__['distant_url'].rstrip('/') + '/' + path,
+                data, {
                     'WEBENGINE_OUTPUT': self.__conf__.get('serialization', 'pickle'),
                     'Accept-Encoding': 'gzip',  # We accept gzipped content
                     'Content-Type': serializer.mime_type,
