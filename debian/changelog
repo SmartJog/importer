@@ -1,6 +1,6 @@
 importer (0.5.1~dev-1) UNRELEASE; urgency=medium
 
-  * TODO
+  * Simplify and modernize the packaging
 
  -- Julien Mori <julien.mori@arkena.com>  Mon, 26 Oct 2015 17:28:36 +0100
 

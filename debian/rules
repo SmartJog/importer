@@ -1,10 +1,6 @@
 #!/usr/bin/make -f
 # -*- makefile -*-
 
-include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/class/autotools.mk
+%:
+	dh $@ --with python2
 
-PYTHON_PACKAGES := importer
-
-$(patsubst %,binary-install/%,$(PYTHON_PACKAGES)) ::
-	dh_pycentral -p$(cdbs_curpkg)
