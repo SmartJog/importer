@@ -5,6 +5,7 @@ Maintainer: Philippe Bridant <philippe.bridant@smartjog.com>
 Uploaders: Julien Mori <julien.mori@arkena.com>
 Build-Depends: debhelper (>= 8),
                python-all,
+               python-requests,
                txt2tags
 X-Python-Version: >= 2.6
 Standards-Version: 3.9.1
