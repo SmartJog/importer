@@ -125,27 +125,6 @@ class Importer(ImporterBase):
         except Exception, exc:
             raise ImporterError(str(exc), traceback=traceback.format_exc())
 
-    def instantiate(self, variable, module, klass, *args, **kw):
-        """
-            Add in the current scope a 'klass' instance from module.
-            Similar to module.klass(*args, **kw).
-            variable will be usable in the scope as others modules.
-        """
-        if 'distant_url' in self.__conf__.keys():
-            mod = '.'.join((module, klass))
-            return self.__perform_distant__(mod, 'instantiate',
-                                            variable=variable, *args, **kw)
-
-        try:
-            if variable in self.__scope__.keys():
-                return
-            module = self.__load_module__(module)
-            self.__scope__[variable] = ImporterVariable(self.__conf__, module,
-                                                        klass, *args, **kw)
-
-        except Exception, exc:
-            raise ImporterError(str(exc), traceback=traceback.format_exc())
-
     def _set_bound(self, bound):
         """ Bound Importer scope to "bound" list. """
         self.__bound__ = bound

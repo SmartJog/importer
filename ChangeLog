@@ -2,6 +2,7 @@ Version 0.5.1~dev
 
 	* Port from urllib2 to requests
 	* Correct the style of the __init__.py.in
+	* Remove a function not used
 
 Version 0.5.0 Released on 2012/06/22
 
