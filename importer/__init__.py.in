@@ -20,10 +20,15 @@ __all__ = ['ImporterError', 'ImporterDeserializeError', 'ImporterSerializeError'
 VERSION = "@PACKAGE_VERSION@"
 
 class ImporterBase(object):
-    """
-        Base class for both ImporterModule and ImporterVariable.
-        Provide call/get/set methods, relying on proper self.__objinst__ object.
-        ImporterModule and ImporterVariable are in charge of creating the appropriate object.
+    """Base class for both ImporterModule and ImporterVariable.
+
+    Provide call/get/set methods, relying
+
+    on proper self.__objinst__ object.
+
+    ImporterModule and ImporterVariable are
+
+    in charge of creating the appropriate object.
     """
     def __init__(self):
         self.__conf__ = {}
@@ -128,13 +133,15 @@ class Importer(ImporterBase):
         """
         if 'distant_url' in self.__conf__.keys():
             mod = '.'.join((module, klass))
-            return self.__perform_distant__(mod, 'instantiate', variable=variable, *args, **kw)
+            return self.__perform_distant__(mod, 'instantiate',
+                                            variable=variable, *args, **kw)
 
         try:
             if variable in self.__scope__.keys():
                 return
             module = self.__load_module__(module)
-            self.__scope__[variable] = ImporterVariable(self.__conf__, module, klass, *args, **kw)
+            self.__scope__[variable] = ImporterVariable(self.__conf__, module,
+                                                        klass, *args, **kw)
 
         except Exception, exc:
             raise ImporterError(str(exc), traceback=traceback.format_exc())
@@ -216,7 +223,8 @@ class Importer(ImporterBase):
             except Exception, exc:
                 raise ImporterDeserializeError(error, traceback=error)
 
-            raise ImporterError(data_decoded['msg'], local=False, traceback=data_decoded['traceback'])
+            raise ImporterError(data_decoded['msg'],
+                                local=False, traceback=data_decoded['traceback'])
 
         except requests.ConnectionError, exc:
             raise ImporterConnectError(str(exc), traceback=traceback.format_exc())
