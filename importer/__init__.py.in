@@ -162,10 +162,10 @@ class Importer(ImporterBase):
             path = module.replace('.', '/') + '/'  # Force trailing slash
 
             # Serialize with serialization method provided in configuration
-            serializer = GeneratorFactory.get(self.__conf__.get('serialization', 'pickle'))
+            serializer = GeneratorFactory.get(self.__conf__.get('serialization', 'msgpack'))
             data = serializer.generate({'type': call_type, 'args': args, 'kw': kw})
             header = {
-                'WEBENGINE_OUTPUT': self.__conf__.get('serialization', 'pickle'),
+                'WEBENGINE_OUTPUT': self.__conf__.get('serialization', 'msgpack'),
                 'Accept-Encoding': 'gzip',  # We accept gzipped content
                 'Content-Type': serializer.mime_type,
                 'User-Agent': self.__conf__.get('user_agent', 'Importer/' + VERSION),
@@ -183,7 +183,7 @@ class Importer(ImporterBase):
                 return None
 
             try:
-                serializer = DecoderFactory.get(self.__conf__.get('serialization', 'pickle'))
+                serializer = DecoderFactory.get(self.__conf__.get('serialization', 'msgpack'))
                 data_decoded = serializer.decode(data_read)
                 return data_decoded
             except Exception:
@@ -197,7 +197,7 @@ class Importer(ImporterBase):
                 raise ImporterError(str(exc), local=False)
 
             try:
-                serializer = DecoderFactory.get(self.__conf__.get('serialization', 'pickle'))
+                serializer = DecoderFactory.get(self.__conf__.get('serialization', 'msgpack'))
                 data_decoded = serializer.decode(error)  # Read exception
             except Exception, exc:
                 raise ImporterDeserializeError(error, traceback=error)
