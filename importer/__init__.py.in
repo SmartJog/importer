@@ -140,11 +140,11 @@ class Importer(ImporterBase):
         """ Transparently decompresses data read from @response. """
         if response.headers.get('Content-Encoding') == 'gzip':
             # Decompress the data
-            data_compressed = cStringIO.StringIO(response.content)
+            data_compressed = cStringIO.StringIO(response.raw.read())
             gzip_decompressor = gzip.GzipFile(fileobj=data_compressed)
             data_read = gzip_decompressor.read()
         else:
-            data_read = response.content
+            data_read = response.raw.read()
 
         return data_read
 
@@ -175,7 +175,7 @@ class Importer(ImporterBase):
                                      verify=self.__conf__.get('ssl_ca', False),
                                      data=data, headers=header,
                                      cert=(self.__conf__.get('ssl_cert'),
-                                           self.__conf__.get('ssl_key')))
+                                           self.__conf__.get('ssl_key')), stream=True)
 
             data_read = self.__decompress__(response)
 

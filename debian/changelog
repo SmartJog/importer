@@ -1,3 +1,9 @@
+importer (0.6.1-1) unstable; urgency=medium
+
+  * New upstream version
+
+ -- Julien Mori <julien.mori@arkena.com>  Tue, 15 Dec 2015 10:54:15 +0100
+
 importer (0.6.0-1) unstable; urgency=medium
 
   * Simplify and modernize the packaging
