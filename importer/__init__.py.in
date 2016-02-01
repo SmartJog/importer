@@ -165,7 +165,7 @@ class Importer(ImporterBase):
             serializer = GeneratorFactory.get(self.__conf__.get('serialization', 'msgpack'))
             data = serializer.generate({'type': call_type, 'args': args, 'kw': kw})
             header = {
-                'WEBENGINE_OUTPUT': self.__conf__.get('serialization', 'msgpack'),
+                'WEBENGINE-OUTPUT': self.__conf__.get('serialization', 'msgpack'),
                 'Accept-Encoding': 'gzip',  # We accept gzipped content
                 'Content-Type': serializer.mime_type,
                 'User-Agent': self.__conf__.get('user_agent', 'Importer/' + VERSION),
