@@ -1,3 +1,7 @@
+Version 0.6.3 Released on 2016/02/23
+
+	* Improve compatibility with some existing exporter plugins
+
 Version 0.6.2 Released on 2016/02/01
 
 	* Fix a syntax error of a variable, headers should not contains underscores
