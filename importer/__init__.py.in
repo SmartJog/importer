@@ -154,11 +154,6 @@ class Importer(ImporterBase):
             if not self.__cj__:
                 self.__cj__ = cookielib.CookieJar()
 
-            if 'timeout' in self.__conf__.keys():
-                socket.setdefaulttimeout(self.__conf__['timeout'])
-            else:
-                socket.setdefaulttimeout(30)
-
             path = module.replace('.', '/') + '/'  # Force trailing slash
 
             # Serialize with serialization method provided in configuration
@@ -172,6 +167,7 @@ class Importer(ImporterBase):
             }
 
             response = requests.post(os.path.join(self.__conf__['distant_url'], path),
+                                     timeout=self.__conf__.get('timeout', 30),
                                      verify=self.__conf__.get('ssl_ca', False),
                                      data=data, headers=header,
                                      cert=(self.__conf__.get('ssl_cert'),
