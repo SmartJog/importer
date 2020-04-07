@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(importer, 0.6.4)
+AC_INIT(importer, 0.6.5)
 
 dnl 2.52 is quite realistic
 AC_PREREQ(2.52)

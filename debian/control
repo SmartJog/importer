@@ -1,15 +1,14 @@
 Source: importer
 Section: python
 Priority: optional
-Maintainer: Philippe Bridant <philippe.bridant@smartjog.com>
-Uploaders: Olivier Ceyral <olivier.ceyral@arkena.com>
-Build-Depends: debhelper (>= 8),
+Maintainer: Nicolas Delvaux <nicolas.delvaux@cji.paris>
+Uploaders: Alexandre Lemaitre <alexandre.lemaitre@cji.paris>
+Build-Depends: debhelper (>= 9),
                python-all,
                txt2tags
-X-Python-Version: >= 2.6
 Standards-Version: 3.9.6
 
-Package: importer
+Package: python-importer
 Architecture: all
 Section: python
 Depends: ${misc:Depends},
@@ -21,3 +20,20 @@ Description: Perform remote call through a distant webengine
  Importer allow to transparently perform local or distant calls to
  Python module. It can also store object instance remotely and perform
  call/get/set on this instance.
+
+
+Package: importer
+Architecture: all
+Section: python
+Depends: ${misc:Depends},
+         python-importer (= ${binary:Version})
+Description: Perform remote call through a distant webengine
+ Importer allow to transparently perform local or distant calls to
+ Python module. It can also store object instance remotely and perform
+ call/get/set on this instance.
+  .
+ This package contains the Python binding.
+
+
+
+
