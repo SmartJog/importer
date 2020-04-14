@@ -63,13 +63,13 @@ class PickleGenerator(Generator):
 
     def generate(self, obj):
         super(PickleGenerator, self).generate(obj)
-        import cPickle
+        import pickle
         try:
-            return cPickle.dumps(obj, cPickle.HIGHEST_PROTOCOL)
-        except cPickle.PickleError, _error:
+            return pickle.dumps(obj, pickle.HIGHEST_PROTOCOL)
+        except pickle.PickleError as _error:
             # cPickle failed, try pickle
             import pickle
-            return pickle.dumps(obj, cPickle.HIGHEST_PROTOCOL)
+            return pickle.dumps(obj, pickle.HIGHEST_PROTOCOL)
 
 class MsgpackGenerator(Generator):
 

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 """ Simple command line tool to test importer. """
@@ -12,7 +12,7 @@ def main():
     """ The magic happens here. """
 
     if len(sys.argv[1:]) < 3:
-        print "Usage: %s HOST|URL MODULE FUNC [params],..." % sys.argv[0]
+        print("Usage: %s HOST|URL MODULE FUNC [params],..." % sys.argv[0])
         sys.exit(1)
 
     imp = importer.Importer()
@@ -33,9 +33,9 @@ def main():
             param = int(param[4:])
         params += [param]
 
-    print "Calling %s.%s with params %s on %s" % (
+    print("Calling %s.%s with params %s on %s" % (
         module, func, str(params), imp['distant_url'],
-    )
+    ))
 
     pprint.pprint(imp.call(module, func, *params))
 

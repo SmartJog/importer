@@ -5,10 +5,10 @@
 import os.path
 import requests
 import traceback
-import cookielib
-import httplib
+import http.cookiejar
+import http.client
 import socket
-import cStringIO
+import io
 import gzip
 
 from importer.exc import ImporterError, ImporterDeserializeError, ImporterSerializeError, ImporterConnectError
@@ -87,12 +87,12 @@ class Importer(ImporterBase):
 
         Return: module.method return.
         """
-        if 'distant_url' in self.__conf__.keys():
+        if 'distant_url' in list(self.__conf__.keys()):
             mod = '.'.join((module, method))
             return self.__perform_distant__(mod, 'call', *args, **kw)
 
         try:
-            if module in self.__scope__.keys():  # Class instance
+            if module in list(self.__scope__.keys()):  # Class instance
                 return self.__scope__[module].call(method, *args, **kw)
             mod = __import__(module, {}, {}, [''])
             callee = getattr(mod, method)
@@ -108,21 +108,21 @@ class Importer(ImporterBase):
             else:
                 return getattr(mod, method)(*args, **kw)
 
-        except Exception, exc:
+        except Exception as exc:
             raise ImporterError(str(exc), traceback=traceback.format_exc())
 
     def get(self, module, attr):
         """ Retrieve an attr from the given module. """
-        if 'distant_url' in self.__conf__.keys():
+        if 'distant_url' in list(self.__conf__.keys()):
             mod = '.'.join((module, attr))
             return self.__perform_distant__(mod, 'get')
 
         try:
-            if module in self.__scope__.keys():  # Class instance
+            if module in list(self.__scope__.keys()):  # Class instance
                 return self.__scope__[module].get(attr)
             mod = __import__(module, {}, {}, [''])
             return getattr(mod, attr)
-        except Exception, exc:
+        except Exception as exc:
             raise ImporterError(str(exc), traceback=traceback.format_exc())
 
     def _set_bound(self, bound):
@@ -140,7 +140,7 @@ class Importer(ImporterBase):
         """ Transparently decompresses data read from @response. """
         if response.headers.get('Content-Encoding') == 'gzip':
             # Decompress the data
-            data_compressed = cStringIO.StringIO(response.raw.read())
+            data_compressed = io.BytesIO(response.raw.read())
             gzip_decompressor = gzip.GzipFile(fileobj=data_compressed)
             data_read = gzip_decompressor.read()
         else:
@@ -152,7 +152,7 @@ class Importer(ImporterBase):
         """ Perform the distant call. """
         try:
             if not self.__cj__:
-                self.__cj__ = cookielib.CookieJar()
+                self.__cj__ = http.cookiejar.CookieJar()
 
             path = module.replace('.', '/') + '/'  # Force trailing slash
 
@@ -185,7 +185,7 @@ class Importer(ImporterBase):
             except Exception:
                 raise ImporterDeserializeError(data_read, traceback=traceback.format_exc())
 
-        except requests.HTTPError, exc:
+        except requests.HTTPError as exc:
             error = self.__decompress__(exc)
 
             # Most likely a normal HTTP server error
@@ -195,14 +195,14 @@ class Importer(ImporterBase):
             try:
                 serializer = DecoderFactory.get(self.__conf__.get('serialization', 'msgpack'))
                 data_decoded = serializer.decode(error)  # Read exception
-            except Exception, exc:
+            except Exception as exc:
                 raise ImporterDeserializeError(error, traceback=error)
 
             raise ImporterError(data_decoded['msg'],
                                 local=False, traceback=data_decoded['traceback'])
 
-        except requests.ConnectionError, exc:
+        except requests.ConnectionError as exc:
             raise ImporterConnectError(str(exc), traceback=traceback.format_exc())
 
-        except Exception, exc:
+        except Exception as exc:
             raise ImporterSerializeError(str(exc), traceback=traceback.format_exc())

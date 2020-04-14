@@ -4,35 +4,36 @@ Priority: optional
 Maintainer: Nicolas Delvaux <nicolas.delvaux@cji.paris>
 Uploaders: Alexandre Lemaitre <alexandre.lemaitre@cji.paris>
 Build-Depends: debhelper (>= 9),
-               python-all,
+               python3-all,
                txt2tags
 Standards-Version: 3.9.6
 
-Package: python-importer
+Package: python3-importer
 Architecture: all
 Section: python
 Depends: ${misc:Depends},
          ${python:Depends},
-         python-requests (>= 1.0.0),
-         msgpack-python
+         python3-requests (>= 1.0.0),
+         python3-msgpack
 Suggests: python-django
 Description: Perform remote call through a distant webengine
  Importer allow to transparently perform local or distant calls to
- Python module. It can also store object instance remotely and perform
+ Python3 module. It can also store object instance remotely and perform
  call/get/set on this instance.
+ .
+ This package contains the Python3 binding.
+
 
 
 Package: importer
 Architecture: all
 Section: python
 Depends: ${misc:Depends},
-         python-importer (= ${binary:Version})
+         python3-importer (= ${binary:Version})
 Description: Perform remote call through a distant webengine
  Importer allow to transparently perform local or distant calls to
- Python module. It can also store object instance remotely and perform
+ Python3 module. It can also store object instance remotely and perform
  call/get/set on this instance.
-  .
- This package contains the Python binding.
 
 
 
