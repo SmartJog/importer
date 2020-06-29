@@ -1,3 +1,9 @@
+importer (0.6.7-1) unstable; urgency=medium
+
+  * Re-release with proper proper Breaks/Replaces for a smooth upgrade
+
+ -- Nicolas Delvaux <nicolas.delvaux@cji.paris>  Mon, 29 Jun 2020 12:15:53 +0200
+
 importer (0.6.5-1) unstable; urgency=medium
 
   * Modernize packaging
