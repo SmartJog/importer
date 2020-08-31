@@ -1,4 +1,4 @@
-Version 0.7.1~dev
+Version 0.7.1 Released on 2020/08/31
 
 	* Fix Python3 deserialization format for msgpack
 	* Format the code with Black
