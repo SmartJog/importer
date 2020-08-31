@@ -88,7 +88,7 @@ class MsgpackDecoder(Decoder):
     def decode(self, obj):
         super(MsgpackDecoder, self).decode(obj)
         import msgpack
-        return msgpack.unpackb(obj)
+        return msgpack.unpackb(obj, encoding="utf-8")
 
 class DecoderFactory(object):
     """ DecoderFactory handles Decoder instances for the right input mode. """
