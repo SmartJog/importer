@@ -103,7 +103,7 @@ class MsgpackDecoder(Decoder):
 
 
 class DecoderFactory(object):
-    """ DecoderFactory handles Decoder instances for the right input mode. """
+    """DecoderFactory handles Decoder instances for the right input mode."""
 
     _input = {
         "default": DefaultDecoder,
@@ -117,8 +117,8 @@ class DecoderFactory(object):
     @staticmethod
     def get(in_decoder):
         """
-            Returns a valid Decoder instance for the given input mode.
-            If the input mode is invalid, returns a DefaultDecoder.
+        Returns a valid Decoder instance for the given input mode.
+        If the input mode is invalid, returns a DefaultDecoder.
         """
 
         decoder = "default"

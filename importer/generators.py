@@ -110,7 +110,7 @@ class DefaultGenerator(Generator):
 
 
 class GeneratorFactory(object):
-    """ GeneratorFactory handles Generator instances for the right output mode. """
+    """GeneratorFactory handles Generator instances for the right output mode."""
 
     _output = {
         "xml": XmlGenerator,
@@ -124,8 +124,8 @@ class GeneratorFactory(object):
     @staticmethod
     def get(output):
         """
-            Returns a valid Generator instance for the given output mode.
-            If the output mode is invalid, returns a DefaultGenerator.
+        Returns a valid Generator instance for the given output mode.
+        If the output mode is invalid, returns a DefaultGenerator.
         """
 
         out = "default"

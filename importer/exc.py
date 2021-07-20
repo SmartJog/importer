@@ -2,7 +2,7 @@
 
 
 class ImporterError(Exception):
-    """ Raised when something happen in Importer."""
+    """Raised when something happen in Importer."""
 
     def __init__(self, msg, local=True, traceback=""):
         self.msg = msg.strip()
@@ -16,18 +16,18 @@ class ImporterError(Exception):
 
 
 class ImporterDeserializeError(ImporterError):
-    """ Error when deserializing from exporter. """
+    """Error when deserializing from exporter."""
 
     pass
 
 
 class ImporterSerializeError(ImporterError):
-    """ Error when serializing. """
+    """Error when serializing."""
 
     pass
 
 
 class ImporterConnectError(ImporterError):
-    """ Error when connecting to remote exporter. """
+    """Error when connecting to remote exporter."""
 
     pass
