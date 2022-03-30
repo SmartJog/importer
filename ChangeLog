@@ -1,6 +1,6 @@
 Version 0.7.3~dev
 
-	* TODO
+	* Fix Python3 deserialization with newer versions of msgpack
 
 Version 0.7.2 Released on 2021/07/20
 
