@@ -1,3 +1,9 @@
+importer (0.7.4-1) unstable; urgency=medium
+
+  * New upstream version
+
+ -- Nicolas Delvaux <nicolas.delvaux@cji.paris>  Fri, 08 Apr 2022 14:24:49 +0200
+
 importer (0.7.3-1) unstable; urgency=medium
 
   * New upstream version

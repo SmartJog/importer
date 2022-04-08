@@ -99,7 +99,7 @@ class MsgpackDecoder(Decoder):
         super(MsgpackDecoder, self).decode(obj)
         import msgpack
 
-        return msgpack.unpackb(obj, raw=False)
+        return msgpack.unpackb(obj, raw=False, strict_map_key=False)
 
 
 class DecoderFactory(object):
