@@ -93,7 +93,9 @@ class MsgpackGenerator(Generator):
         super(MsgpackGenerator, self).generate(obj)
         import msgpack
 
-        return msgpack.packb(obj, default=str)
+        # use_bin_type is required while we need to exchange with very old versions in production.
+        # This should be removable once everyone uses Python3.
+        return msgpack.packb(obj, use_bin_type=False, default=str)
 
 
 class DefaultGenerator(Generator):

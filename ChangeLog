@@ -1,3 +1,7 @@
+Version 0.7.5 Released on 2022/09/09
+
+	* Workaround compatibility with Webengine running on Squeeze...
+
 Version 0.7.4 Released on 2022/04/08
 
 	* Fix existing plugins compatibility during msgpack deserialization
