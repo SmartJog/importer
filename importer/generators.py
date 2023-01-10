@@ -54,10 +54,10 @@ class JSONGenerator(Generator):
 
     def generate(self, obj):
         super(JSONGenerator, self).generate(obj)
-        import django.utils.simplejson as json
-        from django.core.serializers.json import DateTimeAwareJSONEncoder
+        import json
+        from django.core.serializers.json import DjangoJSONEncoder
 
-        return json.dumps(obj, cls=DateTimeAwareJSONEncoder)
+        return json.dumps(obj, cls=DjangoJSONEncoder)
 
 
 class PickleGenerator(Generator):

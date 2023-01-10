@@ -1,6 +1,6 @@
 Version 0.7.6~dev
 
-	* TODO
+	* Fix Json deserialization with newer Django versions
 
 Version 0.7.5 Released on 2022/09/09
 

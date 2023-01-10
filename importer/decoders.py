@@ -67,9 +67,9 @@ class JSONDecoder(Decoder):
 
     def decode(self, obj):
         super(JSONDecoder, self).decode(obj)
-        import django.utils.simplejson as json
+        import json
 
-        return json.JSONDecoder().decode(obj)
+        return json.JSONDecoder().decode(obj.decode())
 
 
 class PickleDecoder(Decoder):
