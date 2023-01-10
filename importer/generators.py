@@ -1,7 +1,7 @@
 # Generator
 
 
-class Generator(object):
+class Generator:
 
     mime_type = None
 
@@ -23,11 +23,11 @@ class XmlGenerator(Generator):
     mime_type = "text/xml"
 
     def __init__(self):
-        super(XmlGenerator, self).__init__()
+        super().__init__()
         self._output = "xml"
 
     def generate(self, obj):
-        super(XmlGenerator, self).generate(obj)
+        super().generate(obj)
         # TODO
 
 
@@ -36,11 +36,11 @@ class SoapGenerator(Generator):
     mime_type = "application/soap+xml"
 
     def __init__(self):
-        super(SoapGenerator, self).__init__()
+        super().__init__()
         self._output = "soap"
 
     def generate(self, obj):
-        super(SoapGenerator, self).generate(obj)
+        super().generate(obj)
         # TODO
 
 
@@ -49,11 +49,11 @@ class JSONGenerator(Generator):
     mime_type = "application/json"
 
     def __init__(self):
-        super(JSONGenerator, self).__init__()
+        super().__init__()
         self._output = "json"
 
     def generate(self, obj):
-        super(JSONGenerator, self).generate(obj)
+        super().generate(obj)
         import json
         from django.core.serializers.json import DjangoJSONEncoder
 
@@ -65,11 +65,11 @@ class PickleGenerator(Generator):
     mime_type = "application/pickle"
 
     def __init__(self):
-        super(PickleGenerator, self).__init__()
+        super().__init__()
         self._output = "pickle"
 
     def generate(self, obj):
-        super(PickleGenerator, self).generate(obj)
+        super().generate(obj)
         import pickle
 
         try:
@@ -86,11 +86,11 @@ class MsgpackGenerator(Generator):
     mime_type = "application/x-msgpack"
 
     def __init__(self):
-        super(MsgpackGenerator, self).__init__()
+        super().__init__()
         self._output = "msgpack"
 
     def generate(self, obj):
-        super(MsgpackGenerator, self).generate(obj)
+        super().generate(obj)
         import msgpack
 
         # use_bin_type is required while we need to exchange with very old versions in production.
@@ -103,15 +103,15 @@ class DefaultGenerator(Generator):
     mime_type = "text/plain"
 
     def __init__(self):
-        super(DefaultGenerator, self).__init__()
+        super().__init__()
         self._output = "default"
 
     def generate(self, obj):
-        super(DefaultGenerator, self).generate(obj)
+        super().generate(obj)
         return str(obj)
 
 
-class GeneratorFactory(object):
+class GeneratorFactory:
     """GeneratorFactory handles Generator instances for the right output mode."""
 
     _output = {

@@ -11,15 +11,27 @@ import socket
 import io
 import gzip
 
-from importer.exc import ImporterError, ImporterDeserializeError, ImporterSerializeError, ImporterConnectError
+from importer.exc import (
+    ImporterError,
+    ImporterDeserializeError,
+    ImporterSerializeError,
+    ImporterConnectError,
+)
 from importer.decoders import DecoderFactory
 from importer.generators import GeneratorFactory
 
-__all__ = ['ImporterError', 'ImporterDeserializeError', 'ImporterSerializeError', 'ImporterConnectError', 'Importer']
+__all__ = [
+    "ImporterError",
+    "ImporterDeserializeError",
+    "ImporterSerializeError",
+    "ImporterConnectError",
+    "Importer",
+]
 
 VERSION = "@PACKAGE_VERSION@"
 
-class ImporterBase(object):
+
+class ImporterBase:
     """Base class for both ImporterModule and ImporterVariable.
 
     Provide call/get/set methods, relying
@@ -30,31 +42,32 @@ class ImporterBase(object):
 
     in charge of creating the appropriate object.
     """
+
     def __init__(self):
         self.__conf__ = {}
         self.__objinst__ = None
 
     def __getitem__(self, key):
         """
-            Used to retrieve data from Importer configuration.
-            Let exceptions be thrown.
+        Used to retrieve data from Importer configuration.
+        Let exceptions be thrown.
         """
         return self.__conf__[key]
 
     def __setitem__(self, key, value):
-        """ Set configuration key. """
+        """Set configuration key."""
         self.__conf__[key] = value
 
     def __delitem__(self, key):
-        """ Delete configuration key. """
+        """Delete configuration key."""
         del self.__conf__[key]
 
     def call(self, method, *args, **kw):
-        """ Getattr self.__objinst__ which will be a module instance or a variable instance. """
+        """Getattr self.__objinst__ which will be a module instance or a variable instance."""
         return getattr(self.__objinst__, method)(*args, **kw)
 
     def get(self, attr):
-        """ Getattr self.__objinst__ and returns. """
+        """Getattr self.__objinst__ and returns."""
         return getattr(self.__objinst__, attr)
 
 
@@ -68,9 +81,10 @@ class ImporterVariable(ImporterBase):
 
 class Importer(ImporterBase):
     """
-        Main class. Contains all modules.
-        Call/get/set/instantiate always check if execution must be done remotely.
+    Main class. Contains all modules.
+    Call/get/set/instantiate always check if execution must be done remotely.
     """
+
     def __init__(self):
         ImporterBase.__init__(self)
         self.__scope__ = {}
@@ -87,23 +101,23 @@ class Importer(ImporterBase):
 
         Return: module.method return.
         """
-        if 'distant_url' in list(self.__conf__.keys()):
-            mod = '.'.join((module, method))
-            return self.__perform_distant__(mod, 'call', *args, **kw)
+        if "distant_url" in list(self.__conf__.keys()):
+            mod = ".".join((module, method))
+            return self.__perform_distant__(mod, "call", *args, **kw)
 
         try:
             if module in list(self.__scope__.keys()):  # Class instance
                 return self.__scope__[module].call(method, *args, **kw)
-            mod = __import__(module, {}, {}, [''])
+            mod = __import__(module, {}, {}, [""])
             callee = getattr(mod, method)
             # The __request__ argument is added by the Exporter.
             # It is used only when the __exportable__ flag is present.
-            request = kw.pop('__request__', None)
+            request = kw.pop("__request__", None)
             # This attribute means that the callee object is a _Export object
             # defined by the @exportable decorator.
             # This is used to distinct between a standard python method, or a
             # webengine method, because a webengine method need a request object.
-            if hasattr(callee, '__exportable__'):
+            if hasattr(callee, "__exportable__"):
                 return callee(request, *args, **kw)
             else:
                 return getattr(mod, method)(*args, **kw)
@@ -112,33 +126,33 @@ class Importer(ImporterBase):
             raise ImporterError(str(exc), traceback=traceback.format_exc())
 
     def get(self, module, attr):
-        """ Retrieve an attr from the given module. """
-        if 'distant_url' in list(self.__conf__.keys()):
-            mod = '.'.join((module, attr))
-            return self.__perform_distant__(mod, 'get')
+        """Retrieve an attr from the given module."""
+        if "distant_url" in list(self.__conf__.keys()):
+            mod = ".".join((module, attr))
+            return self.__perform_distant__(mod, "get")
 
         try:
             if module in list(self.__scope__.keys()):  # Class instance
                 return self.__scope__[module].get(attr)
-            mod = __import__(module, {}, {}, [''])
+            mod = __import__(module, {}, {}, [""])
             return getattr(mod, attr)
         except Exception as exc:
             raise ImporterError(str(exc), traceback=traceback.format_exc())
 
     def _set_bound(self, bound):
-        """ Bound Importer scope to "bound" list. """
+        """Bound Importer scope to "bound" list."""
         self.__bound__ = bound
 
     def _get_bound(self):
-        """ Returns bound list. """
+        """Returns bound list."""
         return self.__bound__
 
     bound = property(_get_bound, _set_bound)
 
     @staticmethod
     def __decompress__(response):
-        """ Transparently decompresses data read from @response. """
-        if response.headers.get('Content-Encoding') == 'gzip':
+        """Transparently decompresses data read from @response."""
+        if response.headers.get("Content-Encoding") == "gzip":
             # Decompress the data
             data_compressed = io.BytesIO(response.raw.read())
             gzip_decompressor = gzip.GzipFile(fileobj=data_compressed)
@@ -149,57 +163,69 @@ class Importer(ImporterBase):
         return data_read
 
     def __perform_distant__(self, module, call_type, *args, **kw):
-        """ Perform the distant call. """
+        """Perform the distant call."""
         try:
             if not self.__cj__:
                 self.__cj__ = http.cookiejar.CookieJar()
 
-            path = module.replace('.', '/') + '/'  # Force trailing slash
+            path = module.replace(".", "/") + "/"  # Force trailing slash
 
             # Serialize with serialization method provided in configuration
-            serializer = GeneratorFactory.get(self.__conf__.get('serialization', 'msgpack'))
-            data = serializer.generate({'type': call_type, 'args': args, 'kw': kw})
+            serializer = GeneratorFactory.get(
+                self.__conf__.get("serialization", "msgpack")
+            )
+            data = serializer.generate({"type": call_type, "args": args, "kw": kw})
             header = {
-                'WEBENGINE-OUTPUT': self.__conf__.get('serialization', 'msgpack'),
-                'Accept-Encoding': 'gzip',  # We accept gzipped content
-                'Content-Type': serializer.mime_type,
-                'User-Agent': self.__conf__.get('user_agent', 'Importer/' + VERSION),
+                "WEBENGINE-OUTPUT": self.__conf__.get("serialization", "msgpack"),
+                "Accept-Encoding": "gzip",  # We accept gzipped content
+                "Content-Type": serializer.mime_type,
+                "User-Agent": self.__conf__.get("user_agent", "Importer/" + VERSION),
             }
 
-            response = requests.post(os.path.join(self.__conf__['distant_url'], path),
-                                     timeout=self.__conf__.get('timeout', 30),
-                                     verify=self.__conf__.get('ssl_ca', False),
-                                     data=data, headers=header,
-                                     cert=(self.__conf__.get('ssl_cert'),
-                                           self.__conf__.get('ssl_key')), stream=True)
+            response = requests.post(
+                os.path.join(self.__conf__["distant_url"], path),
+                timeout=self.__conf__.get("timeout", 30),
+                verify=self.__conf__.get("ssl_ca", False),
+                data=data,
+                headers=header,
+                cert=(self.__conf__.get("ssl_cert"), self.__conf__.get("ssl_key")),
+                stream=True,
+            )
 
             data_read = self.__decompress__(response)
 
-            if data_read == '':
+            if data_read == "":
                 return None
 
             try:
-                serializer = DecoderFactory.get(self.__conf__.get('serialization', 'msgpack'))
+                serializer = DecoderFactory.get(
+                    self.__conf__.get("serialization", "msgpack")
+                )
                 data_decoded = serializer.decode(data_read)
                 return data_decoded
             except Exception:
-                raise ImporterDeserializeError(data_read, traceback=traceback.format_exc())
+                raise ImporterDeserializeError(
+                    data_read, traceback=traceback.format_exc()
+                )
 
         except requests.HTTPError as exc:
             error = self.__decompress__(exc)
 
             # Most likely a normal HTTP server error
-            if exc.headers.get('Content-Type') != 'application/octet-stream':
+            if exc.headers.get("Content-Type") != "application/octet-stream":
                 raise ImporterError(str(exc), local=False)
 
             try:
-                serializer = DecoderFactory.get(self.__conf__.get('serialization', 'msgpack'))
+                serializer = DecoderFactory.get(
+                    self.__conf__.get("serialization", "msgpack")
+                )
                 data_decoded = serializer.decode(error)  # Read exception
             except Exception as exc:
                 raise ImporterDeserializeError(error, traceback=error)
 
-            raise ImporterError(data_decoded['msg'],
-                                local=False, traceback=data_decoded['traceback'])
+            raise ImporterError(
+                data_decoded["msg"], local=False, traceback=data_decoded["traceback"]
+            )
 
         except requests.ConnectionError as exc:
             raise ImporterConnectError(str(exc), traceback=traceback.format_exc())
