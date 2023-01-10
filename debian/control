@@ -15,7 +15,7 @@ Depends: ${misc:Depends},
          ${python:Depends},
          python3-requests (>= 1.0.0),
          python3-msgpack
-Suggests: python-django
+Recommends: python3-django
 Replaces: importer (<< 0.6.5-1)
 Breaks: importer (<< 0.6.5-1)
 Description: Perform remote call through a distant webengine

@@ -1,6 +1,7 @@
 importer (0.7.6~dev-1) UNRELEASED; urgency=medium
 
   * New upstream version
+  * Recommends python3-django
 
  -- Nicolas Delvaux <nicolas.delvaux@cji.paris>  Tue, 10 Jan 2023 10:46:44 +0100
 
