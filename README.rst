@@ -52,10 +52,11 @@ Authors
 Importer was started at SmartJog by Thomas Meson in 2009. Various employees and
 interns from SmartJog fixed bugs and added features since then.
 
-* Bryann Lamour <bryann.lamour@smartjog.com>
-* Clément Bœsch <clement.boesch@smartjog.com>
-* Gilles Dartiguelongue <gilles.dartiguelongue@smartjog.com>
-* Nicolas Noirbent <nicolas.noirbent@smartjog.com>
-* Philippe Bridant <philippe.bridant@smartjog.com>
-* Rémi Cardona <remi.cardona@smartjog.com>
-* Thomas Meson <thomas.meson@smartjog.com>
+* Bryann Lamour
+* Clément Bœsch
+* Gilles Dartiguelongue
+* Nicolas Noirbent
+* Nicolas Delvaux <nicolas.delvaux@cji.paris>
+* Philippe Bridant
+* Rémi Cardona
+* Thomas Meson
